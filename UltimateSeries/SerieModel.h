@@ -9,45 +9,69 @@
 #import <Foundation/Foundation.h>
 @import UIKit;
 
-#define NO_INFO_NUM_SEASONS -1
+#define NO_INFO_NUM -1
 
 @interface SerieModel : NSObject
 
 @property (copy, nonatomic) NSString *title;
+@property (nonatomic) int idSerie;
 @property (copy, nonatomic) NSArray *genres;
 @property (copy, nonatomic) NSString *infoDesc;
 @property (assign, nonatomic) int seasons;
-@property (strong, nonatomic) UIImage *cover;
+@property (assign, nonatomic) int episodes;
+@property (strong, nonatomic, readonly) UIImage *cover;
+@property (strong, nonatomic) NSURL *coverURL;
 @property (strong, nonatomic) NSURL *infoWeb;
+@property (nonatomic) BOOL inProduction;
+@property   (nonatomic) int votesAverage;
+@property (nonatomic) int votesCount;
+
 
 // Métodos de clase:
 
 // constructores de conveniencia
 
 +(id) serieWithTitle: (NSString *) aTitle
+             serieID: (int) aIdSerie
           serieGenre: (NSArray *) aGenre
            serieInfo: (NSString *) aInfoDesc
         serieSeasons: (int) aSeasons
-          serieCover: (UIImage *) serieCover
-        serieInfoWeb: (NSURL *) ainfoWeb;
+       serieEpisodes: (int) aEpisodes
+       serieCoverURL: (NSURL *) serieCoverURL
+        serieInfoWeb: (NSURL *) ainfoWeb
+   serieInProduction: (BOOL) aInProduction
+   serieVotesAverage: (int) aVotesAverage
+     serieVotesCount: (int) aVotesCount;
 
 +(id) serieWithTitle: (NSString *) aTitle
-          serieInfo: (NSString *) aInfoDesc;
+             serieID: (int) aIdSerie
+       serieCoverURL: (NSURL *) serieCoverURL;
+
 
 // Métodos de instancia
 
 // inicializador designado
 -(id) initWithTitle: (NSString *) aTitle
+            serieID: (int) aIdSerie
          serieGenre: (NSArray *) aGenre
           serieInfo: (NSString *) aInfoDesc
        serieSeasons: (int) aSeasons
-         serieCover: (UIImage *) serieCover
-       serieInfoWeb: (NSURL *) ainfoWeb;
+      serieEpisodes: (int) aEpisodes
+      serieCoverURL: (NSURL *) serieCoverURL
+       serieInfoWeb: (NSURL *) ainfoWeb
+  serieInProduction: (BOOL) aInProduction
+  serieVotesAverage: (int) aVotesAverage
+    serieVotesCount: (int) aVotesCount;
 
 // inicializador de conveniencia
 -(id) initWithTitle: (NSString *) aTitle
-          serieInfo: (NSString *) aInfoDesc;
+            serieID: (int) aIdSerie
+      serieCoverURL: (NSURL *) serieCoverURL;
 
 
+// inicializador a partir del diccionario JSON
+-(id) initMasterWithDictionary:(NSDictionary *)aDict;
+
+-(void) updateModelWithDictionary:(NSDictionary *)aDict;
 
 @end

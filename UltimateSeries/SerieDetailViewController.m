@@ -14,12 +14,15 @@
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *genreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *seasonsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *episodesLabel;
+@property (weak, nonatomic) IBOutlet UILabel *productionLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *productionImageView;
+@property (weak, nonatomic) IBOutlet UILabel *votesLabel;
 @property (weak, nonatomic) IBOutlet UITextView *infoDescTextView;
 
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
 
-@property (weak, nonatomic) IBOutlet UIView *topViewContainer;
-@property (weak, nonatomic) IBOutlet UIView *bottomViewContainer;
+
 
 - (IBAction)infoWebButtonPressed:(id)sender;
 
@@ -69,6 +72,21 @@
     self.titleLabel.text = self.aModel.title;
     self.genreLabel.text = [self arrayToString: self.aModel.genres];
     self.seasonsLabel.text = [NSString stringWithFormat:@"Seasons: %d   ",self.aModel.seasons];
+    self.episodesLabel.text = [NSString stringWithFormat:@"Episodes: %d   ",self.aModel.episodes];
+    self.productionLabel.text = [NSString stringWithFormat:@"Actually in production:"];
+    // mostrar check si esta en produccion o aspas si no
+    
+    NSLog(@"%@",self.aModel.inProduction ? @"YES":@"NO");
+    
+    if(!self.aModel.inProduction){
+        self.productionImageView.image = [UIImage imageNamed:@"icon-Cancel.png"];
+    } else {
+        self.productionImageView.image = [UIImage imageNamed:@"icon-Ok.png"];
+    }
+    
+    self.votesLabel.text = [NSString stringWithFormat:@"Votes: (%d)   ",self.aModel.votesCount];
+    // mostrar la media de votos con estrellas
+    
     self.infoDescTextView.text = self.aModel.infoDesc;
     self.coverImageView.image = self.aModel.cover;
     

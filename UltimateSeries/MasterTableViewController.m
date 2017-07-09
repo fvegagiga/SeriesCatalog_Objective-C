@@ -13,6 +13,8 @@
 @interface MasterTableViewController ()
 
 @property (strong, nonatomic) SerieModel *aModel;
+@property (assign, nonatomic) int actualRow;
+
 
 @end
 
@@ -26,18 +28,23 @@
     
     self.seriesArray = [NSMutableArray array];
     
+    self.actualRow = 0;
+    
     self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
+    
+    // inicializamos el modelo de datos
+    [self getModelDataFromURL:NO_INFO_NUM];
+
     
     UINavigationController *navController = self.splitViewController.viewControllers[1];
     SerieDetailViewController *rootDetailViewController = (SerieDetailViewController*)navController.topViewController;
     rootDetailViewController.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
     self.navigationItem.leftItemsSupplementBackButton = true;
     
-    // inicializamos el modelo de datos
-    [self initializeModel];
-    //[self getModelDataFromURL];
 
-    rootDetailViewController.aModel = [self.seriesArray objectAtIndex:0];
+
+    NSLog(@"LOG: continua la ejecución");
+    //rootDetailViewController.aModel = [self.seriesArray objectAtIndex:0];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -57,22 +64,25 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
 #pragma mark - Segues
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    
+
     if ([segue.identifier isEqualToString:@"showDetail"]) {
         
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        
         SerieDetailViewController *destination = (SerieDetailViewController *) [[segue destinationViewController] topViewController];
-        destination.aModel = [self.seriesArray objectAtIndex:indexPath.row];
+  
+        SerieModel *selectedSerieModel = sender;
         
+        destination.aModel = selectedSerieModel;
+        NSLog(@"LOG: Ya lo cogi");
+
         destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         self.navigationItem.leftItemsSupplementBackButton = true;
     }
 }
-
 
 
 #pragma mark - Table view data source
@@ -92,13 +102,27 @@
     // Configure the cell...
     
     standarTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standarCell" forIndexPath:indexPath];
-    
+
     SerieModel *xModel = self.seriesArray[indexPath.row];
-    
-    cell.imageView.image = xModel.cover;
+
+    cell.serieImageView.image = xModel.cover;
     cell.serieLabel.text = xModel.title;
     
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    self.actualRow = (int)indexPath.row;
+    
+    SerieModel *selectedSerieModel = [self.seriesArray objectAtIndex:indexPath.row];
+    
+    if (selectedSerieModel.infoDesc == nil) {
+        // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
+        [self getModelDataFromURL:selectedSerieModel.idSerie];
+    } else {
+        [self performSegueWithIdentifier:@"showDetail" sender:selectedSerieModel];
+    }
 }
 
 /*
@@ -147,52 +171,80 @@
 
 
 
-#pragma mark - Model data
+#pragma mark - JSON
 
--(void) initializeModel{
-    
-    self.aModel = [SerieModel serieWithTitle:@"The Walking Dead"
-                                  serieGenre:@[ @"Terror", @"Drama" ]
-                                   serieInfo:@"Tras despertar de un coma en un hospital abandonado, el oficial de policía Rick Grimes (Andrew Lincoln) se da cuenta de que el mundo que conocía ya no existe y de que el caos se ha apoderado de la ciudad debido a que inexplicablemente los muertos caminantes dominan las calles. A las afueras de Atlanta, un pequeño campamento lucha por sobrevivir mientras los muertos-vivientes los acechan a cada momento.16 Dicho grupo, guiado por Shane Walsh (Jon Bernthal), pasa a ser liderado por Rick, a quien encuentran después de haberlo dado por muerto. Este último anteriormente había encontrado en Atlanta a un grupo pequeño que ha ido a la ciudad a buscar víveres. Mientras su situación se vuelve más y más sombría, la desesperación del grupo por sobrevivir les obliga a hacer cosas que en su vida anterior a la plaga caminantes no se habrían imaginado hacer jamás.17"
-                                serieSeasons:7
-                                  serieCover:[UIImage imageNamed:@"the-walking-dead-cover.jpg"]
-                                serieInfoWeb:[NSURL URLWithString:@"http://www.amc.com/shows/the-walking-dead"]];
-    
-    
-    [self.seriesArray addObject:self.aModel];
-    
-    self.aModel = [SerieModel serieWithTitle:@"Prison Break"
-                                  serieGenre:@[ @"Accion" ]
-                                   serieInfo:@"Prison Break, también conocida como Prison Break: En busca de la verdad en Hispanoamérica, es una serie de televisión dramática estadounidense."
-                                serieSeasons:5
-                                  serieCover:[UIImage imageNamed:@"prisonBreak.jpg"]
-                                serieInfoWeb:[NSURL URLWithString:@"http://www.foxtv.es/series/fox/prison-break"]];
-    
-    
-    [self.seriesArray addObject:self.aModel];
-}
 
--(void)getModelDataFromURL {
+-(void)getModelDataFromURL:(int) idForUpdateItem {
     
     // API key: 7d34f86cc14ecd73a16b9d1838c88a13
     // Example: https://api.themoviedb.org/3/movie/550?api_key=7d34f86cc14ecd73a16b9d1838c88a13
+    
+    NSString *baseUrl = @"https://api.themoviedb.org/3/tv/";
+    NSString *sectionUrl = nil;
+    NSString *apiKeyUrl = @"?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
+    NSString *extrasUrl = @"&language=en-US";
+    
+    if (idForUpdateItem < 0){
+        sectionUrl = @"popular";
+    } else {
+        sectionUrl = [NSString stringWithFormat:@"%d",idForUpdateItem];
+    }
 
-    NSString *baseUrl = @"https://api.themoviedb.org/3/movie/550?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
+    NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, sectionUrl, apiKeyUrl, extrasUrl];
+
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:baseUrl]];
-    
-    
+    [request setURL:[NSURL URLWithString:finalUrl]];
     
     NSURLSessionDataTask *task = [[self getURLSession] dataTaskWithRequest:request
                                                          completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
     {
         dispatch_async( dispatch_get_main_queue(),
                        ^{
-                           NSError *jsonError;
-                           NSArray *parsedJSONArray = (NSArray *)[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+                           if (data != nil) {
+                               // No ha habido error
+                               NSError *jsonError;
+                               NSDictionary *parsedJSONArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+                               
+                               if (parsedJSONArray != nil) {
+                                   // No ha habido error
+                                   SerieModel *serieActual = nil;
+                                   // Carga total de la tabla
+                                   if (idForUpdateItem < 0){
+                                       NSArray *itemsArray = [parsedJSONArray objectForKey:@"results"];
+                                       
+                                       for (NSDictionary *dict in itemsArray){
+                                           serieActual = [[SerieModel alloc] initMasterWithDictionary:dict];
+                                           [self.seriesArray addObject:serieActual];
+                                       }
+                                       
+                                       [self.tableView reloadData];
+                                       
+                                       // actualizamos el contenido del primer item
+                                       serieActual = [self.seriesArray objectAtIndex:self.actualRow];
+                                       [serieActual updateModelWithDictionary:parsedJSONArray];
+                                       
+                                       // inicializamos la pantalla de detalle con la primera serie de la lista
+                                       [self getModelDataFromURL:serieActual.idSerie];
+                                       
+                                   } else {     // Actualizacion de un item concreto en la vista de detalle
 
-                           NSLog(@"%@", parsedJSONArray[0]);
+                                       SerieModel *serieActual = [self.seriesArray objectAtIndex:self.actualRow];
+                                       [serieActual updateModelWithDictionary:parsedJSONArray];
+                                           NSLog(@"LOG: Termino la carga de datos");
+                                       
+                                       [self performSegueWithIdentifier:@"showDetail" sender:serieActual];
+
+                                   }
+                                   
+                                   
+                               } else {
+                                   NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
+                               }
+                            
+                           } else {
+                               NSLog(@"Error al descargar datos del servidor: %@", error.localizedDescription);
+                           }
                        });
     }];
     [task resume];

@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F83432F71F10D2FF007689C0 /* prisonBreak.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F83432F61F10D2FF007689C0 /* prisonBreak.jpg */; };
 		F8343ADB1F0FE39500A69B81 /* MasterTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */; };
 		F8343ADE1F0FE4D300A69B81 /* standarTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */; };
+		F8817D261F12B5F70041D9E2 /* icon-Cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = F8817D241F12B5F70041D9E2 /* icon-Cancel.png */; };
+		F8817D271F12B5F70041D9E2 /* icon-Ok.png in Resources */ = {isa = PBXBuildFile; fileRef = F8817D251F12B5F70041D9E2 /* icon-Ok.png */; };
 		F8EFA5581F0D457900F7561B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA5571F0D457900F7561B /* main.m */; };
 		F8EFA55B1F0D457900F7561B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA55A1F0D457900F7561B /* AppDelegate.m */; };
 		F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA55F1F0D457900F7561B /* Main.storyboard */; };
@@ -17,16 +18,16 @@
 		F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA5641F0D457900F7561B /* LaunchScreen.storyboard */; };
 		F8EFA56F1F0D459E00F7561B /* SerieModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA56E1F0D459E00F7561B /* SerieModel.m */; };
 		F8EFA57D1F0D56DC00F7561B /* SerieDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA57B1F0D56DC00F7561B /* SerieDetailViewController.m */; };
-		F8EFA5801F0D608E00F7561B /* the-walking-dead-cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA57F1F0D608E00F7561B /* the-walking-dead-cover.jpg */; };
 		F8EFA5841F0D651000F7561B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA5821F0D651000F7561B /* WebViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F83432F61F10D2FF007689C0 /* prisonBreak.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = prisonBreak.jpg; sourceTree = "<group>"; };
 		F8343AD91F0FE39500A69B81 /* MasterTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterTableViewController.h; sourceTree = "<group>"; };
 		F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterTableViewController.m; sourceTree = "<group>"; };
 		F8343ADC1F0FE4D300A69B81 /* standarTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standarTableViewCell.h; sourceTree = "<group>"; };
 		F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = standarTableViewCell.m; sourceTree = "<group>"; };
+		F8817D241F12B5F70041D9E2 /* icon-Cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-Cancel.png"; sourceTree = "<group>"; };
+		F8817D251F12B5F70041D9E2 /* icon-Ok.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-Ok.png"; sourceTree = "<group>"; };
 		F8EFA5531F0D457900F7561B /* UltimateSeries.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltimateSeries.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8EFA5571F0D457900F7561B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F8EFA5591F0D457900F7561B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -39,7 +40,6 @@
 		F8EFA56E1F0D459E00F7561B /* SerieModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SerieModel.m; sourceTree = "<group>"; };
 		F8EFA57A1F0D56DC00F7561B /* SerieDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SerieDetailViewController.h; sourceTree = "<group>"; };
 		F8EFA57B1F0D56DC00F7561B /* SerieDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SerieDetailViewController.m; sourceTree = "<group>"; };
-		F8EFA57F1F0D608E00F7561B /* the-walking-dead-cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "the-walking-dead-cover.jpg"; sourceTree = "<group>"; };
 		F8EFA5811F0D651000F7561B /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		F8EFA5821F0D651000F7561B /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +71,15 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		F8817D281F12B5FB0041D9E2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F8817D241F12B5F70041D9E2 /* icon-Cancel.png */,
+				F8817D251F12B5F70041D9E2 /* icon-Ok.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		F8EFA54A1F0D457900F7561B = {
 			isa = PBXGroup;
 			children = (
@@ -90,10 +99,9 @@
 		F8EFA5551F0D457900F7561B /* UltimateSeries */ = {
 			isa = PBXGroup;
 			children = (
-				F8EFA57F1F0D608E00F7561B /* the-walking-dead-cover.jpg */,
-				F83432F61F10D2FF007689C0 /* prisonBreak.jpg */,
 				F8EFA5591F0D457900F7561B /* AppDelegate.h */,
 				F8EFA55A1F0D457900F7561B /* AppDelegate.m */,
+				F8817D281F12B5FB0041D9E2 /* Resources */,
 				F8EFA5701F0D464000F7561B /* Models */,
 				F8343ADF1F0FE4D800A69B81 /* Views */,
 				F8EFA5741F0D4FF700F7561B /* Controllers */,
@@ -196,11 +204,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8EFA5801F0D608E00F7561B /* the-walking-dead-cover.jpg in Resources */,
+				F8817D271F12B5F70041D9E2 /* icon-Ok.png in Resources */,
+				F8817D261F12B5F70041D9E2 /* icon-Cancel.png in Resources */,
 				F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */,
 				F8EFA5631F0D457900F7561B /* Assets.xcassets in Resources */,
 				F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */,
-				F83432F71F10D2FF007689C0 /* prisonBreak.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +349,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5MPC35WK7F;
 				INFOPLIST_FILE = UltimateSeries/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.blacksparrowgames.UltimateSeries;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -353,6 +362,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5MPC35WK7F;
 				INFOPLIST_FILE = UltimateSeries/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.blacksparrowgames.UltimateSeries;
 				PRODUCT_NAME = "$(TARGET_NAME)";

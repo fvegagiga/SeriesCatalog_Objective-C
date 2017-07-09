@@ -15,6 +15,12 @@
 
 @implementation WebViewController
 
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
@@ -46,10 +52,17 @@
 }
 
 
+-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
 
+    NSLog(@"Error : %@",error);
+
+}
 #pragma mark - Utils
 
 -(void)displayURL:(NSURL *) infoURL {
+    
+    NSLog(@"Vamos a la web: %@", infoURL);
     
     self.browser.delegate = self;
     

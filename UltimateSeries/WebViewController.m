@@ -62,7 +62,7 @@
 
 -(void)displayURL:(NSURL *) infoURL {
     
-    NSLog(@"Vamos a la web: %@", infoURL);
+    NSLog(@"Vamos a la web: %@", infoURL); 
     
     self.browser.delegate = self;
     

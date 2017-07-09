@@ -7,25 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F83432F71F10D2FF007689C0 /* prisonBreak.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F83432F61F10D2FF007689C0 /* prisonBreak.jpg */; };
+		F8343ADB1F0FE39500A69B81 /* MasterTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */; };
+		F8343ADE1F0FE4D300A69B81 /* standarTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */; };
 		F8EFA5581F0D457900F7561B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA5571F0D457900F7561B /* main.m */; };
 		F8EFA55B1F0D457900F7561B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA55A1F0D457900F7561B /* AppDelegate.m */; };
-		F8EFA55E1F0D457900F7561B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA55D1F0D457900F7561B /* ViewController.m */; };
 		F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA55F1F0D457900F7561B /* Main.storyboard */; };
 		F8EFA5631F0D457900F7561B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA5621F0D457900F7561B /* Assets.xcassets */; };
 		F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA5641F0D457900F7561B /* LaunchScreen.storyboard */; };
+		F8EFA56F1F0D459E00F7561B /* SerieModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA56E1F0D459E00F7561B /* SerieModel.m */; };
+		F8EFA57D1F0D56DC00F7561B /* SerieDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA57B1F0D56DC00F7561B /* SerieDetailViewController.m */; };
+		F8EFA5801F0D608E00F7561B /* the-walking-dead-cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA57F1F0D608E00F7561B /* the-walking-dead-cover.jpg */; };
+		F8EFA5841F0D651000F7561B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA5821F0D651000F7561B /* WebViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F83432F61F10D2FF007689C0 /* prisonBreak.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = prisonBreak.jpg; sourceTree = "<group>"; };
+		F8343AD91F0FE39500A69B81 /* MasterTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterTableViewController.h; sourceTree = "<group>"; };
+		F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterTableViewController.m; sourceTree = "<group>"; };
+		F8343ADC1F0FE4D300A69B81 /* standarTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standarTableViewCell.h; sourceTree = "<group>"; };
+		F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = standarTableViewCell.m; sourceTree = "<group>"; };
 		F8EFA5531F0D457900F7561B /* UltimateSeries.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltimateSeries.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8EFA5571F0D457900F7561B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F8EFA5591F0D457900F7561B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F8EFA55A1F0D457900F7561B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		F8EFA55C1F0D457900F7561B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		F8EFA55D1F0D457900F7561B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		F8EFA5601F0D457900F7561B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F8EFA5621F0D457900F7561B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F8EFA5651F0D457900F7561B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F8EFA5671F0D457900F7561B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F8EFA56D1F0D459E00F7561B /* SerieModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SerieModel.h; sourceTree = "<group>"; };
+		F8EFA56E1F0D459E00F7561B /* SerieModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SerieModel.m; sourceTree = "<group>"; };
+		F8EFA57A1F0D56DC00F7561B /* SerieDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SerieDetailViewController.h; sourceTree = "<group>"; };
+		F8EFA57B1F0D56DC00F7561B /* SerieDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SerieDetailViewController.m; sourceTree = "<group>"; };
+		F8EFA57F1F0D608E00F7561B /* the-walking-dead-cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "the-walking-dead-cover.jpg"; sourceTree = "<group>"; };
+		F8EFA5811F0D651000F7561B /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
+		F8EFA5821F0D651000F7561B /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +55,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F83432FB1F10FFA2007689C0 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Connection;
+			sourceTree = "<group>";
+		};
+		F8343ADF1F0FE4D800A69B81 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F8343ADC1F0FE4D300A69B81 /* standarTableViewCell.h */,
+				F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		F8EFA54A1F0D457900F7561B = {
 			isa = PBXGroup;
 			children = (
@@ -58,14 +90,18 @@
 		F8EFA5551F0D457900F7561B /* UltimateSeries */ = {
 			isa = PBXGroup;
 			children = (
+				F8EFA57F1F0D608E00F7561B /* the-walking-dead-cover.jpg */,
+				F83432F61F10D2FF007689C0 /* prisonBreak.jpg */,
 				F8EFA5591F0D457900F7561B /* AppDelegate.h */,
 				F8EFA55A1F0D457900F7561B /* AppDelegate.m */,
-				F8EFA55C1F0D457900F7561B /* ViewController.h */,
-				F8EFA55D1F0D457900F7561B /* ViewController.m */,
+				F8EFA5701F0D464000F7561B /* Models */,
+				F8343ADF1F0FE4D800A69B81 /* Views */,
+				F8EFA5741F0D4FF700F7561B /* Controllers */,
 				F8EFA55F1F0D457900F7561B /* Main.storyboard */,
 				F8EFA5621F0D457900F7561B /* Assets.xcassets */,
 				F8EFA5641F0D457900F7561B /* LaunchScreen.storyboard */,
 				F8EFA5671F0D457900F7561B /* Info.plist */,
+				F83432FB1F10FFA2007689C0 /* Connection */,
 				F8EFA5561F0D457900F7561B /* Supporting Files */,
 			);
 			path = UltimateSeries;
@@ -77,6 +113,28 @@
 				F8EFA5571F0D457900F7561B /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F8EFA5701F0D464000F7561B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F8EFA56D1F0D459E00F7561B /* SerieModel.h */,
+				F8EFA56E1F0D459E00F7561B /* SerieModel.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		F8EFA5741F0D4FF700F7561B /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				F8343AD91F0FE39500A69B81 /* MasterTableViewController.h */,
+				F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */,
+				F8EFA57A1F0D56DC00F7561B /* SerieDetailViewController.h */,
+				F8EFA57B1F0D56DC00F7561B /* SerieDetailViewController.m */,
+				F8EFA5811F0D651000F7561B /* WebViewController.h */,
+				F8EFA5821F0D651000F7561B /* WebViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,9 +196,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EFA5801F0D608E00F7561B /* the-walking-dead-cover.jpg in Resources */,
 				F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */,
 				F8EFA5631F0D457900F7561B /* Assets.xcassets in Resources */,
 				F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */,
+				F83432F71F10D2FF007689C0 /* prisonBreak.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,9 +211,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8EFA55E1F0D457900F7561B /* ViewController.m in Sources */,
+				F8EFA57D1F0D56DC00F7561B /* SerieDetailViewController.m in Sources */,
+				F8EFA5841F0D651000F7561B /* WebViewController.m in Sources */,
+				F8EFA56F1F0D459E00F7561B /* SerieModel.m in Sources */,
 				F8EFA55B1F0D457900F7561B /* AppDelegate.m in Sources */,
+				F8343ADE1F0FE4D300A69B81 /* standarTableViewCell.m in Sources */,
 				F8EFA5581F0D457900F7561B /* main.m in Sources */,
+				F8343ADB1F0FE39500A69B81 /* MasterTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +378,7 @@
 				F8EFA56C1F0D457900F7561B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

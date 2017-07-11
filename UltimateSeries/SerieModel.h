@@ -19,6 +19,8 @@
 @property (copy, nonatomic) NSString *infoDesc;
 @property (assign, nonatomic) int seasons;
 @property (assign, nonatomic) int episodes;
+@property (strong, nonatomic, readonly) UIImage *backdrop;
+@property (strong, nonatomic) NSURL *backdropURL;
 @property (strong, nonatomic, readonly) UIImage *cover;
 @property (strong, nonatomic) NSURL *coverURL;
 @property (strong, nonatomic) NSURL *infoWeb;
@@ -37,6 +39,7 @@
            serieInfo: (NSString *) aInfoDesc
         serieSeasons: (int) aSeasons
        serieEpisodes: (int) aEpisodes
+    serieBackDropURL: (NSURL *) aBackdropURL
        serieCoverURL: (NSURL *) serieCoverURL
         serieInfoWeb: (NSURL *) ainfoWeb
    serieInProduction: (BOOL) aInProduction
@@ -57,6 +60,7 @@
           serieInfo: (NSString *) aInfoDesc
        serieSeasons: (int) aSeasons
       serieEpisodes: (int) aEpisodes
+   serieBackDropURL: (NSURL *) aBackdropURL
       serieCoverURL: (NSURL *) serieCoverURL
        serieInfoWeb: (NSURL *) ainfoWeb
   serieInProduction: (BOOL) aInProduction

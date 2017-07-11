@@ -13,6 +13,7 @@
 
 // Para crear el método geter personalizado a una propiedad "readonly" necesitamos la variable de instancia:
 @synthesize cover = _cover;
+@synthesize backdrop = _backdrop;
 
 #pragma mark - properties
 -(UIImage *)cover{
@@ -25,6 +26,16 @@
     return _cover;
 }
 
+-(UIImage *)backdrop{
+    
+    // enviar al segundo plano para evitar bloquar la aplicacion
+    
+    if(_backdrop == nil){
+        _backdrop = [UIImage imageWithData:[NSData dataWithContentsOfURL:self.backdropURL]];
+    }
+    return _backdrop;
+}
+
 #pragma mark - Class methods
 
 +(id) serieWithTitle: (NSString *) aTitle
@@ -33,6 +44,7 @@
            serieInfo: (NSString *) aInfoDesc
         serieSeasons: (int) aSeasons
        serieEpisodes: (int) aEpisodes
+    serieBackDropURL: (NSURL *) aBackdropURL
        serieCoverURL: (NSURL *) serieCoverURL
         serieInfoWeb: (NSURL *) ainfoWeb
    serieInProduction: (BOOL) aInProduction
@@ -46,6 +58,7 @@
                              serieInfo:aInfoDesc
                           serieSeasons:aSeasons
                          serieEpisodes:aEpisodes
+                      serieBackDropURL:aBackdropURL
                          serieCoverURL:serieCoverURL
                           serieInfoWeb:ainfoWeb
                      serieInProduction:aInProduction
@@ -63,6 +76,7 @@
                              serieInfo:nil
                           serieSeasons:NO_INFO_NUM
                          serieEpisodes:NO_INFO_NUM
+                      serieBackDropURL:nil
                          serieCoverURL:nil
                           serieInfoWeb:nil
                      serieInProduction:false
@@ -80,6 +94,7 @@
           serieInfo: (NSString *) aInfoDesc
        serieSeasons: (int) aSeasons
       serieEpisodes: (int) aEpisodes
+   serieBackDropURL: (NSURL *) aBackdropURL
       serieCoverURL: (NSURL *) serieCoverURL
        serieInfoWeb: (NSURL *) aInfoWeb
   serieInProduction: (BOOL) aInProduction
@@ -92,8 +107,13 @@
         _genres = aGenre;
         _infoDesc = aInfoDesc;
         _seasons = aSeasons;
+        _episodes = aEpisodes;
+        _backdropURL = aBackdropURL;
         _coverURL = serieCoverURL;
         _infoWeb = aInfoWeb;
+        _inProduction = aInProduction;
+        _votesAverage = aVotesAverage;
+        _votesCount = aVotesCount;
     }
    
     return self;
@@ -111,6 +131,7 @@
                      serieInfo:nil
                   serieSeasons:NO_INFO_NUM
                  serieEpisodes:NO_INFO_NUM
+              serieBackDropURL:nil
                  serieCoverURL:serieCoverURL
                   serieInfoWeb:nil
              serieInProduction:false
@@ -139,6 +160,11 @@
     self.infoDesc = [aDict objectForKey:@"overview"];
     self.seasons = [[aDict objectForKey:@"number_of_seasons"] intValue];
     self.episodes = [[aDict objectForKey:@"number_of_episodes"] intValue];
+    
+    NSString *backdropURLBaseUrl = @"https://image.tmdb.org/t/p/w780";
+    NSString *backdropURLFinalUrl = [backdropURLBaseUrl stringByAppendingString:[aDict objectForKey:@"backdrop_path"]];
+    self.backdropURL = [NSURL URLWithString:backdropURLFinalUrl];
+    
     self.infoWeb = [NSURL URLWithString:[aDict objectForKey:@"homepage"]];
     self.inProduction = [[aDict valueForKey:@"in_production"] boolValue];
     self.votesAverage = [[aDict objectForKey:@"vote_average"] intValue];

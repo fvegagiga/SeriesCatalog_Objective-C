@@ -11,6 +11,7 @@
 
 @interface SerieDetailViewController ()
 
+
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *genreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *seasonsLabel;
@@ -20,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *votesLabel;
 @property (weak, nonatomic) IBOutlet UITextView *infoDescTextView;
 
+@property (weak, nonatomic) IBOutlet UIImageView *dropbackImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
 
 
@@ -84,11 +86,12 @@
         self.productionImageView.image = [UIImage imageNamed:@"icon-Ok.png"];
     }
     
-    self.votesLabel.text = [NSString stringWithFormat:@"Votes: (%d)   ",self.aModel.votesCount];
+    self.votesLabel.text = [NSString stringWithFormat:@"Votes (%d)   ",self.aModel.votesCount];
     // mostrar la media de votos con estrellas
     
     self.infoDescTextView.text = self.aModel.infoDesc;
     self.coverImageView.image = self.aModel.cover;
+    self.dropbackImageView.image = self.aModel.backdrop;
     
     // otras configuraciones
     self.infoDescTextView.textAlignment = NSTextAlignmentJustified;

@@ -65,26 +65,6 @@
 }
 
 
-
-#pragma mark - Segues
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-
-    if ([segue.identifier isEqualToString:@"showDetail"]) {
-        
-        SerieDetailViewController *destination = (SerieDetailViewController *) [[segue destinationViewController] topViewController];
-  
-        SerieModel *selectedSerieModel = sender;
-        
-        destination.aModel = selectedSerieModel;
-        NSLog(@"LOG: Ya lo cogi");
-
-        destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        self.navigationItem.leftItemsSupplementBackButton = true;
-    }
-}
-
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -114,8 +94,9 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     self.actualRow = (int)indexPath.row;
-    
     SerieModel *selectedSerieModel = [self.seriesArray objectAtIndex:indexPath.row];
+    
+    NSLog(@"id de la serie seleccionada: %d", selectedSerieModel.idSerie);
     
     if (selectedSerieModel.infoDesc == nil) {
         // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
@@ -159,15 +140,25 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    
+    if ([segue.identifier isEqualToString:@"showDetail"]) {
+        
+        SerieDetailViewController *destination = (SerieDetailViewController *) [[segue destinationViewController] topViewController];
+        
+        SerieModel *selectedSerieModel = sender;
+        
+        destination.aModel = selectedSerieModel;
+        NSLog(@"LOG: Ya lo cogi");
+        
+        destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
+        self.navigationItem.leftItemsSupplementBackButton = true;
+    }
 }
-*/
+
 
 
 
@@ -192,6 +183,7 @@
 
     NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, sectionUrl, apiKeyUrl, extrasUrl];
 
+    NSLog(@"%@", finalUrl);
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:finalUrl]];
@@ -209,6 +201,7 @@
                                if (parsedJSONArray != nil) {
                                    // No ha habido error
                                    SerieModel *serieActual = nil;
+                                   
                                    // Carga total de la tabla
                                    if (idForUpdateItem < 0){
                                        NSArray *itemsArray = [parsedJSONArray objectForKey:@"results"];
@@ -222,7 +215,6 @@
                                        
                                        // actualizamos el contenido del primer item
                                        serieActual = [self.seriesArray objectAtIndex:self.actualRow];
-                                       [serieActual updateModelWithDictionary:parsedJSONArray];
                                        
                                        // inicializamos la pantalla de detalle con la primera serie de la lista
                                        [self getModelDataFromURL:serieActual.idSerie];
@@ -230,11 +222,13 @@
                                    } else {     // Actualizacion de un item concreto en la vista de detalle
 
                                        SerieModel *serieActual = [self.seriesArray objectAtIndex:self.actualRow];
+                                       
+                                           NSLog(@"Llegamos con esto: %@", finalUrl);
+                                       
                                        [serieActual updateModelWithDictionary:parsedJSONArray];
                                            NSLog(@"LOG: Termino la carga de datos");
                                        
                                        [self performSegueWithIdentifier:@"showDetail" sender:serieActual];
-
                                    }
                                    
                                    

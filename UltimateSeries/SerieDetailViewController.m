@@ -23,6 +23,7 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *dropbackImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
+@property (weak, nonatomic) IBOutlet UIView *backgroundViewGradient;
 
 
 
@@ -36,8 +37,34 @@
     [super viewDidLoad];
     
     self.title = self.aModel.title;
-    
+
+
 }
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    
+    gradient.frame = self.backgroundViewGradient.bounds;
+    UIColor *firstColor = (id)[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:1.0f].CGColor;
+    UIColor *secondColor = (id)[UIColor colorWithRed:0.27f green:0.67f blue:0.38f alpha:1.0f].CGColor;
+
+    gradient.colors = @[ firstColor, secondColor ];
+    
+    [self.backgroundViewGradient.layer insertSublayer:gradient atIndex:0];
+}
+
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size
+          withTransitionCoordinator:coordinator];
+
+    [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        [[[self.backgroundViewGradient.layer sublayers] objectAtIndex:0] setFrame:self.backgroundViewGradient.bounds];
+
+    }];
+}
+
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -75,7 +102,7 @@
     self.genreLabel.text = [self arrayToString: self.aModel.genres];
     self.seasonsLabel.text = [NSString stringWithFormat:@"Seasons: %d   ",self.aModel.seasons];
     self.episodesLabel.text = [NSString stringWithFormat:@"Episodes: %d   ",self.aModel.episodes];
-    self.productionLabel.text = [NSString stringWithFormat:@"Actually in production:"];
+    self.productionLabel.text = [NSString stringWithFormat:@"Actually in production:    "];
     // mostrar check si esta en produccion o aspas si no
     
     NSLog(@"%@",self.aModel.inProduction ? @"YES":@"NO");

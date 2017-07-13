@@ -17,12 +17,12 @@
             <objects>
                 <navigationController autoresizesArchivedViewToFullSize="NO" id="NcP-F4-mQF" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="UeW-5c-YJc">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="UeW-5c-YJc" customClass="CRGradientNavigationBar">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <textAttributes key="titleTextAttributes">
-                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                            <color key="textShadowColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="uoU-KN-ovR">
@@ -52,16 +52,16 @@
                             <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QpK-OO-cc8" userLabel="BackDropView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="301.5"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oTS-44-g6U">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="301.5"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oTS-44-g6U">
+                                        <rect key="frame" x="0.0" y="8" width="375" height="285.5"/>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="oTS-44-g6U" secondAttribute="trailing" id="I8T-X8-guT"/>
-                                    <constraint firstItem="oTS-44-g6U" firstAttribute="top" secondItem="QpK-OO-cc8" secondAttribute="top" id="Ki6-Qo-stb"/>
+                                    <constraint firstItem="oTS-44-g6U" firstAttribute="top" secondItem="QpK-OO-cc8" secondAttribute="top" constant="8" id="Ki6-Qo-stb"/>
                                     <constraint firstItem="oTS-44-g6U" firstAttribute="leading" secondItem="QpK-OO-cc8" secondAttribute="leading" id="MOj-ay-AaU"/>
-                                    <constraint firstAttribute="bottom" secondItem="oTS-44-g6U" secondAttribute="bottom" id="jfu-G4-UXp"/>
+                                    <constraint firstAttribute="bottom" secondItem="oTS-44-g6U" secondAttribute="bottom" constant="8" id="jfu-G4-UXp"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ilv-I6-r0U" userLabel="topView">
@@ -74,7 +74,6 @@
                                                 <rect key="frame" x="16" y="16" width="87.5" height="269.5"/>
                                             </imageView>
                                         </subviews>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="J9o-G9-OR2" secondAttribute="trailing" constant="16" id="PVl-89-5Yj"/>
                                             <constraint firstAttribute="bottom" secondItem="J9o-G9-OR2" secondAttribute="bottom" constant="16" id="aLq-57-h3e"/>
@@ -88,10 +87,10 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="bMp-ct-wAf">
                                                 <rect key="frame" x="8" y="8" width="223.5" height="269.5"/>
                                                 <subviews>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MDb-vg-JNt">
+                                                    <stackView opaque="NO" contentMode="scaleToFill" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MDb-vg-JNt">
                                                         <rect key="frame" x="0.0" y="0.0" width="223.5" height="1.5"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3y3-MX-8Ed">
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3y3-MX-8Ed">
                                                                 <rect key="frame" x="0.0" y="0.0" width="201.5" height="1.5"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                                 <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
@@ -176,7 +175,6 @@
                                                 </subviews>
                                             </stackView>
                                         </subviews>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="bMp-ct-wAf" secondAttribute="bottom" constant="8" id="TkM-kY-E8B"/>
                                             <constraint firstItem="bMp-ct-wAf" firstAttribute="leading" secondItem="zB0-r5-wBY" secondAttribute="leading" constant="8" id="bAg-C3-jrX"/>
@@ -185,7 +183,7 @@
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.12129447609186172" green="0.12922456860542297" blue="0.14169979095458984" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="zB0-r5-wBY" firstAttribute="top" secondItem="Ilv-I6-r0U" secondAttribute="top" constant="8" id="0Pi-EO-TKd"/>
                                     <constraint firstItem="zB0-r5-wBY" firstAttribute="leading" secondItem="EFA-bu-IJK" secondAttribute="trailing" constant="8" id="8Ya-VO-Jmm"/>
@@ -213,6 +211,7 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="5tO-ge-DFf"/>
                     <connections>
+                        <outlet property="backgroundViewGradient" destination="Ilv-I6-r0U" id="GXg-xf-ZF4"/>
                         <outlet property="coverImageView" destination="J9o-G9-OR2" id="MFc-Tz-1Fd"/>
                         <outlet property="dropbackImageView" destination="oTS-44-g6U" id="D2w-fh-Gjn"/>
                         <outlet property="episodesLabel" destination="PBj-Iq-PPa" id="MlQ-CZ-1Nc"/>
@@ -233,13 +232,13 @@
         <scene sceneID="uJH-FY-2iD">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="rlF-Qt-vDP" customClass="MasterTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="MWg-A5-T73">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="MWg-A5-T73">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="separatorColor" red="0.1863011195596441" green="0.41739117345316068" blue="0.25876354568319099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="standarCell" rowHeight="75" id="GPC-qj-iaL" customClass="standarTableViewCell">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="standarCell" rowHeight="75" id="GPC-qj-iaL" customClass="standarTableViewCell">
                                 <rect key="frame" x="0.0" y="28" width="375" height="75"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GPC-qj-iaL" id="FcJ-f5-tMk">
@@ -256,7 +255,7 @@
                                             <rect key="frame" x="104" y="10" width="265" height="54.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                            <nil key="highlightedColor"/>
+                                            <color key="highlightedColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </label>
                                     </subviews>
                                     <constraints>
@@ -269,7 +268,7 @@
                                         <constraint firstItem="dRu-5W-iaz" firstAttribute="top" secondItem="FcJ-f5-tMk" secondAttribute="topMargin" constant="2" id="wnh-W4-tnF"/>
                                     </constraints>
                                 </tableViewCellContentView>
-                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0087445184844887457" green="0.019803738221526146" blue="0.012096728586423289" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <outlet property="serieImageView" destination="k9R-k7-YgH" id="XYw-rf-l6W"/>
                                     <outlet property="serieLabel" destination="dRu-5W-iaz" id="RQp-p0-dOt"/>
@@ -295,13 +294,15 @@
         <scene sceneID="EJt-Om-ikf">
             <objects>
                 <navigationController id="hcA-JR-1zQ" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Qwo-lV-blz">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Qwo-lV-blz" customClass="CRGradientNavigationBar">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.36807467880094163" green="0.1606798806597225" blue="0.45557399611398963" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <color key="textShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <offsetWrapper key="textShadowOffset" horizontal="1" vertical="1"/>
                         </textAttributes>
                     </navigationBar>
@@ -369,6 +370,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="iTh-SP-2jz"/>
+        <segue reference="r6H-JT-cvV"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -9,6 +9,9 @@
 #import "MasterTableViewController.h"
 #import "standarTableViewCell.h"
 #import "SerieDetailViewController.h"
+#import <CRGradientNavigationBar.h>
+
+#define IS_IPHONE UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone
 
 @interface MasterTableViewController ()
 
@@ -32,16 +35,30 @@
     
     self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
     
-    // inicializamos el modelo de datos
+    // inicializamos el modelo de datos:
+    //          - tabla de la escena Master;
+    //          - escena Detail con la información del primer registro
     [self getModelDataFromURL:NO_INFO_NUM];
-
     
-    UINavigationController *navController = self.splitViewController.viewControllers[1];
-    SerieDetailViewController *rootDetailViewController = (SerieDetailViewController*)navController.topViewController;
+    // Configuración de la barra de navegación de la escena DETAIL
+    UINavigationController *navControllerDetail = self.splitViewController.viewControllers[1];
+    
+    SerieDetailViewController *rootDetailViewController = (SerieDetailViewController*)navControllerDetail.topViewController;
     rootDetailViewController.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
     self.navigationItem.leftItemsSupplementBackButton = true;
     
+    
+    
+    
+    // establecemos el color de degradado para las barras de navegación
+    UIColor *firstColor = [UIColor colorWithRed:0.27f green:0.67f blue:0.38f alpha:1.0f];
+    UIColor *secondColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:1.0f];
+    NSArray *colors = [NSArray arrayWithObjects:firstColor, secondColor, nil];
+    
+    [[CRGradientNavigationBar appearance] setBarTintGradientColors:colors];
 
+    // Nos establecemos como delegados del SplitViewController
+    self.splitViewController.delegate = self;
 
     NSLog(@"LOG: continua la ejecución");
     //rootDetailViewController.aModel = [self.seriesArray objectAtIndex:0];
@@ -92,7 +109,7 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     self.actualRow = (int)indexPath.row;
     SerieModel *selectedSerieModel = [self.seriesArray objectAtIndex:indexPath.row];
     
@@ -139,6 +156,14 @@
     return YES;
 }
 */
+
+#pragma mark - UISplitViewControllerDelegate
+
+-(bool)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController{
+    return true;
+}
+
+
 
 
 #pragma mark - Navigation
@@ -217,7 +242,11 @@
                                        serieActual = [self.seriesArray objectAtIndex:self.actualRow];
                                        
                                        // inicializamos la pantalla de detalle con la primera serie de la lista
-                                       [self getModelDataFromURL:serieActual.idSerie];
+                                       // solo si estamos en ipad
+                                       
+                                       if (!IS_IPHONE) {
+                                           [self getModelDataFromURL:serieActual.idSerie];
+                                       }
                                        
                                    } else {     // Actualizacion de un item concreto en la vista de detalle
 

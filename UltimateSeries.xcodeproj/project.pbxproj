@@ -10,6 +10,8 @@
 		F42989F4E95BC417D55C096F /* libPods-UltimateSeries.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E5361AE6149D824BD4ACD0 /* libPods-UltimateSeries.a */; };
 		F8343ADB1F0FE39500A69B81 /* MasterTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */; };
 		F8343ADE1F0FE4D300A69B81 /* standarTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */; };
+		F880D5E81F17D43A003E4DA2 /* No-image-found.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F880D5E71F17D43A003E4DA2 /* No-image-found.jpg */; };
+		F880D5EA1F17EF6B003E4DA2 /* load-image.png in Resources */ = {isa = PBXBuildFile; fileRef = F880D5E91F17EF6B003E4DA2 /* load-image.png */; };
 		F8817D261F12B5F70041D9E2 /* icon-Cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = F8817D241F12B5F70041D9E2 /* icon-Cancel.png */; };
 		F8817D271F12B5F70041D9E2 /* icon-Ok.png in Resources */ = {isa = PBXBuildFile; fileRef = F8817D251F12B5F70041D9E2 /* icon-Ok.png */; };
 		F8EFA5581F0D457900F7561B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA5571F0D457900F7561B /* main.m */; };
@@ -30,6 +32,8 @@
 		F8343ADA1F0FE39500A69B81 /* MasterTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterTableViewController.m; sourceTree = "<group>"; };
 		F8343ADC1F0FE4D300A69B81 /* standarTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standarTableViewCell.h; sourceTree = "<group>"; };
 		F8343ADD1F0FE4D300A69B81 /* standarTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = standarTableViewCell.m; sourceTree = "<group>"; };
+		F880D5E71F17D43A003E4DA2 /* No-image-found.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "No-image-found.jpg"; sourceTree = "<group>"; };
+		F880D5E91F17EF6B003E4DA2 /* load-image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "load-image.png"; sourceTree = "<group>"; };
 		F8817D241F12B5F70041D9E2 /* icon-Cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-Cancel.png"; sourceTree = "<group>"; };
 		F8817D251F12B5F70041D9E2 /* icon-Ok.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-Ok.png"; sourceTree = "<group>"; };
 		F8EFA5531F0D457900F7561B /* UltimateSeries.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UltimateSeries.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +100,8 @@
 		F8817D281F12B5FB0041D9E2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F880D5E91F17EF6B003E4DA2 /* load-image.png */,
+				F880D5E71F17D43A003E4DA2 /* No-image-found.jpg */,
 				F8817D241F12B5F70041D9E2 /* icon-Cancel.png */,
 				F8817D251F12B5F70041D9E2 /* icon-Ok.png */,
 			);
@@ -231,9 +237,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F880D5EA1F17EF6B003E4DA2 /* load-image.png in Resources */,
 				F8817D271F12B5F70041D9E2 /* icon-Ok.png in Resources */,
 				F8817D261F12B5F70041D9E2 /* icon-Cancel.png in Resources */,
 				F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */,
+				F880D5E81F17D43A003E4DA2 /* No-image-found.jpg in Resources */,
 				F8EFA5631F0D457900F7561B /* Assets.xcassets in Resources */,
 				F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */,
 			);

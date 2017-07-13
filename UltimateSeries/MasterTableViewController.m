@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) SerieModel *aModel;
 @property (assign, nonatomic) int actualRow;
+@property (assign, nonatomic) int totalPages;
 
 
 @end
@@ -38,7 +39,13 @@
     // inicializamos el modelo de datos:
     //          - tabla de la escena Master;
     //          - escena Detail con la información del primer registro
-    [self getModelDataFromURL:NO_INFO_NUM];
+    
+    self.totalPages = 20;
+    
+    
+    for (int i = 1; i < self.totalPages; i++){
+        [self getMasterTableDataFromURL:i];
+    }
     
     // Configuración de la barra de navegación de la escena DETAIL
     UINavigationController *navControllerDetail = self.splitViewController.viewControllers[1];
@@ -102,8 +109,12 @@
 
     SerieModel *xModel = self.seriesArray[indexPath.row];
 
-    cell.serieImageView.image = xModel.cover;
+    cell.serieImageView.image = [UIImage imageNamed:@"load-image.png"];
+    
+    //cell.serieImageView.image = xModel.cover;
     cell.serieLabel.text = xModel.title;
+    
+    [cell showImageFromURL:xModel.coverURL];
     
     return cell;
 }
@@ -190,23 +201,18 @@
 #pragma mark - JSON
 
 
--(void)getModelDataFromURL:(int) idForUpdateItem {
+-(void)getMasterTableDataFromURL:(int) pageNum {
     
     // API key: 7d34f86cc14ecd73a16b9d1838c88a13
     // Example: https://api.themoviedb.org/3/movie/550?api_key=7d34f86cc14ecd73a16b9d1838c88a13
     
     NSString *baseUrl = @"https://api.themoviedb.org/3/tv/";
-    NSString *sectionUrl = nil;
+    NSString *sectionUrl = @"popular";
     NSString *apiKeyUrl = @"?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
-    NSString *extrasUrl = @"&language=en-US";
-    
-    if (idForUpdateItem < 0){
-        sectionUrl = @"popular";
-    } else {
-        sectionUrl = [NSString stringWithFormat:@"%d",idForUpdateItem];
-    }
+    NSString *extrasUrl = @"&language=en-US=pages&page=";
 
-    NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, sectionUrl, apiKeyUrl, extrasUrl];
+
+    NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@%d", baseUrl, sectionUrl, apiKeyUrl, extrasUrl, pageNum];
 
     NSLog(@"%@", finalUrl);
     
@@ -228,12 +234,18 @@
                                    SerieModel *serieActual = nil;
                                    
                                    // Carga total de la tabla
-                                   if (idForUpdateItem < 0){
+
                                        NSArray *itemsArray = [parsedJSONArray objectForKey:@"results"];
                                        
                                        for (NSDictionary *dict in itemsArray){
-                                           serieActual = [[SerieModel alloc] initMasterWithDictionary:dict];
-                                           [self.seriesArray addObject:serieActual];
+                                           
+                                           if ([dict objectForKey:@"poster_path"] != (id)[NSNull null]) {
+                                               serieActual = [[SerieModel alloc] initMasterWithDictionary:dict];
+                                               [self.seriesArray addObject:serieActual];
+                                           }
+                                           else {
+                                               NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
+                                           }
                                        }
                                        
                                        [self.tableView reloadData];
@@ -244,21 +256,10 @@
                                        // inicializamos la pantalla de detalle con la primera serie de la lista
                                        // solo si estamos en ipad
                                        
-                                       if (!IS_IPHONE) {
+                                       if (!(IS_IPHONE) && pageNum == 1) {
+                                           [self selectFirstRow];
                                            [self getModelDataFromURL:serieActual.idSerie];
                                        }
-                                       
-                                   } else {     // Actualizacion de un item concreto en la vista de detalle
-
-                                       SerieModel *serieActual = [self.seriesArray objectAtIndex:self.actualRow];
-                                       
-                                           NSLog(@"Llegamos con esto: %@", finalUrl);
-                                       
-                                       [serieActual updateModelWithDictionary:parsedJSONArray];
-                                           NSLog(@"LOG: Termino la carga de datos");
-                                       
-                                       [self performSegueWithIdentifier:@"showDetail" sender:serieActual];
-                                   }
                                    
                                    
                                } else {
@@ -273,6 +274,69 @@
     [task resume];
 }
 
+-(void)getModelDataFromURL:(int) idForUpdateItem {
+    
+    // API key: 7d34f86cc14ecd73a16b9d1838c88a13
+    // Example: https://api.themoviedb.org/3/movie/550?api_key=7d34f86cc14ecd73a16b9d1838c88a13
+    
+    NSString *baseUrl = @"https://api.themoviedb.org/3/tv/";
+    NSString *sectionUrl = nil;
+    NSString *apiKeyUrl = @"?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
+    NSString *extrasUrl = @"&language=en-US";
+    
+    if (idForUpdateItem < 0){
+        sectionUrl = @"popular";
+    } else {
+        sectionUrl = [NSString stringWithFormat:@"%d",idForUpdateItem];
+    }
+    
+    NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, sectionUrl, apiKeyUrl, extrasUrl];
+    
+    NSLog(@"%@", finalUrl);
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:finalUrl]];
+    
+    NSURLSessionDataTask *task = [[self getURLSession] dataTaskWithRequest:request
+                                                         completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
+                                  {
+                                      dispatch_async( dispatch_get_main_queue(),
+                                                     ^{
+                                                         if (data != nil) {
+                                                             // No ha habido error
+                                                             NSError *jsonError;
+                                                             NSDictionary *parsedJSONArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+                                                             
+                                                             if (parsedJSONArray != nil) {
+                                                                 // No ha habido error
+                                                                 
+                                                                    // Actualizacion de un item concreto en la vista de detalle
+                                                                     
+                                                                     SerieModel *serieActual = [self.seriesArray objectAtIndex:self.actualRow];
+                                                                     
+                                                                     NSLog(@"Llegamos con esto: %@", finalUrl);
+                                                                     
+                                                                     [serieActual updateModelWithDictionary:parsedJSONArray];
+                                                                     NSLog(@"LOG: Termino la carga de datos");
+                                                                     
+                                                                     [self performSegueWithIdentifier:@"showDetail" sender:serieActual];
+                                                                 
+                                                                 
+                                                                 
+                                                             } else {
+                                                                 NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
+                                                             }
+                                                             
+                                                         } else {
+                                                             NSLog(@"Error al descargar datos del servidor: %@", error.localizedDescription);
+                                                         }
+                                                     });
+                                  }];
+    [task resume];
+}
+
+
+
 -(NSURLSession * )getURLSession {
     static NSURLSession *session = nil;
     static dispatch_once_t onceToken;
@@ -286,5 +350,16 @@
     return session;
 }
 
+
+// Damos efecto de selección a la primera fila de la tabla si estamos en modo ipad
+
+-(void)selectFirstRow {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    // optional:
+    // [self tableView:myTable willSelectRowAtIndexPath:indexPath];
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
+    // optional:
+    // [self tableView:myTable didSelectRowAtIndexPath:indexPath];
+}
 
 @end

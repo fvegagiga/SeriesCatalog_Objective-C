@@ -8,6 +8,12 @@
 
 #import "SerieModel.h"
 
+@interface SerieModel ()
+
+@property (nonatomic, strong) NSURLSessionDataTask *imageDataTask;
+
+@end
+
 @implementation SerieModel
 
 
@@ -145,8 +151,6 @@
     NSString *imageBaseUrl = @"https://image.tmdb.org/t/p/w185";
     NSString *imageFinalUrl = [imageBaseUrl stringByAppendingString:[aDict objectForKey:@"poster_path"]];
     
-    // NSLog(@"%@", imageFinalUrl);
-    
     return [self initWithTitle:[aDict objectForKey:@"name"]
                        serieID:[[aDict objectForKey:@"id"] intValue]
                  serieCoverURL:[NSURL URLWithString:imageFinalUrl]];
@@ -159,28 +163,25 @@
     self.genres = [self extractGenresFromJSONArray:[aDict objectForKey:@"genres"]];
     self.infoDesc = [aDict objectForKey:@"overview"];
     self.seasons = [[aDict objectForKey:@"number_of_seasons"] intValue];
-    self.episodes = [[aDict objectForKey:@"number_of_episodes"] intValue];
+    self.episodes = ([aDict objectForKey:@"number_of_episodes"] != (id)[NSNull null]) ?
+        [[aDict objectForKey:@"number_of_episodes"] intValue] : 0;
     
-    NSString *backdropURLBaseUrl = @"https://image.tmdb.org/t/p/w780";
-    NSString *backdropURLFinalUrl = [backdropURLBaseUrl stringByAppendingString:[aDict objectForKey:@"backdrop_path"]];
-    self.backdropURL = [NSURL URLWithString:backdropURLFinalUrl];
+    NSLog(@"id: %d", self.idSerie);
     
-    self.infoWeb = [NSURL URLWithString:[aDict objectForKey:@"homepage"]];
+    if ([aDict objectForKey:@"backdrop_path"] != (id)[NSNull null]) {
+        NSString *backdropURLBaseUrl = @"https://image.tmdb.org/t/p/w780";
+        NSString *backdropURLFinalUrl = [backdropURLBaseUrl stringByAppendingString:[aDict objectForKey:@"backdrop_path"]];
+        self.backdropURL = [NSURL URLWithString:backdropURLFinalUrl];
+    } else {
+        self.backdropURL = nil;
+    }
+    
+    self.infoWeb = ([NSURL URLWithString:[aDict objectForKey:@"homepage"]] != (id)[NSNull null]) ?
+        [NSURL URLWithString:[aDict objectForKey:@"homepage"]] : nil;
     self.inProduction = [[aDict valueForKey:@"in_production"] boolValue];
     self.votesAverage = [[aDict objectForKey:@"vote_average"] intValue];
     self.votesCount = [[aDict objectForKey:@"vote_count"] intValue];
 }
-
-//-(NSDictionary *) proxyForJSON{
-//    
-//    return @{@"title"           : self.title,
-//             @"genres"           : self.genres,
-//             @"infoDesc"        : self.infoDesc,
-//             @"seasons"         : @(self.seasons),
-//             @"cover"           : [self.coverURL path],
-//             @"infoWeb"         : self.infoWeb };
-//    
-//}
 
 
 #pragma mark - Utils

@@ -13,4 +13,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *serieImageView;
 @property (weak, nonatomic) IBOutlet UILabel *serieLabel;
 
+-(void) showImageFromURL:(NSURL *) imageURL;
+
 @end

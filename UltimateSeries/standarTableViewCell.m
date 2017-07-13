@@ -8,17 +8,39 @@
 
 #import "standarTableViewCell.h"
 
+
+
+@interface standarTableViewCell ()
+
+@property (nonatomic, strong) NSURLSessionDataTask *imageDataTask;
+
+@end
+
 @implementation standarTableViewCell
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
-}
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+-(void) showImageFromURL:(NSURL *) imageURL{
+    
+    if (self.imageDataTask != nil) {
+        [self.imageDataTask cancel];
+        self.imageDataTask = nil;
+    }
+    
+    self.imageDataTask = [[NSURLSession sharedSession] dataTaskWithURL:imageURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error==nil){
+            UIImage *image = [UIImage imageWithData:data];
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                self.serieImageView.image = image;
+            }];
+            
+        }
+        
+        self.imageDataTask = nil;
+    }];
+    
+    [self.imageDataTask resume];
 }
 
 @end

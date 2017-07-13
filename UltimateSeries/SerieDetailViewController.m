@@ -11,6 +11,8 @@
 
 @interface SerieDetailViewController ()
 
+@property (nonatomic, strong) NSURLSessionDataTask *imageDataTaskForCover;
+@property (nonatomic, strong) NSURLSessionDataTask *imageDataTaskForBackDrop;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *genreLabel;
@@ -26,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UIView *backgroundViewGradient;
 
 
+@property (weak, nonatomic) IBOutlet UIButton *infoWebButton;
 
 - (IBAction)infoWebButtonPressed:(id)sender;
 
@@ -99,6 +102,13 @@
 -(void) syncModelWithView {
     
     self.titleLabel.text = self.aModel.title;
+    
+    //if(self.aModel.infoWeb.absoluteString.length == 0) {
+    if(![self.aModel.infoWeb.scheme hasPrefix:@"http"]){
+        self.infoWebButton.hidden = YES;
+    }
+    
+    
     self.genreLabel.text = [self arrayToString: self.aModel.genres];
     self.seasonsLabel.text = [NSString stringWithFormat:@"Seasons: %d   ",self.aModel.seasons];
     self.episodesLabel.text = [NSString stringWithFormat:@"Episodes: %d   ",self.aModel.episodes];
@@ -117,13 +127,64 @@
     // mostrar la media de votos con estrellas
     
     self.infoDescTextView.text = self.aModel.infoDesc;
-    self.coverImageView.image = self.aModel.cover;
-    self.dropbackImageView.image = self.aModel.backdrop;
+
+    self.coverImageView.image = [UIImage imageNamed:@"load-image.png"];
+    self.dropbackImageView.image = [UIImage imageNamed:@"load-image.png"];
+    
+    [self showCoverImageFromURL:self.aModel.coverURL];
+    [self showDropBackImageFromURL:self.aModel.backdropURL];
     
     // otras configuraciones
     self.infoDescTextView.textAlignment = NSTextAlignmentJustified;
 }
 
+-(void) showCoverImageFromURL:(NSURL *) imageURL{
+    
+    if (self.imageDataTaskForCover != nil) {
+        [self.imageDataTaskForCover cancel];
+        self.imageDataTaskForCover = nil;
+    }
+    
+    self.imageDataTaskForCover = [[NSURLSession sharedSession] dataTaskWithURL:imageURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error==nil){
+            UIImage *image = [UIImage imageWithData:data];
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                self.coverImageView.image = image;
+            }];
+            
+        }
+        
+        self.imageDataTaskForCover = nil;
+    }];
+    
+    [self.imageDataTaskForCover resume];
+}
+
+-(void) showDropBackImageFromURL:(NSURL *) imageURL{
+    
+    if (self.imageDataTaskForBackDrop != nil) {
+        [self.imageDataTaskForBackDrop cancel];
+        self.imageDataTaskForBackDrop = nil;
+    }
+    
+    self.imageDataTaskForBackDrop = [[NSURLSession sharedSession] dataTaskWithURL:imageURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (error==nil){
+            UIImage *image = [UIImage imageWithData:data];
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                self.dropbackImageView.image = image;
+            }];
+            
+        }
+        
+        self.imageDataTaskForBackDrop = nil;
+    }];
+    
+    [self.imageDataTaskForBackDrop resume];
+}
 
 -(NSString *) arrayToString:(NSArray *) arrayGenres{
     

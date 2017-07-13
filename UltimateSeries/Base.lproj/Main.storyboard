@@ -84,20 +84,20 @@
                                     <view contentMode="top" translatesAutoresizingMaskIntoConstraints="NO" id="zB0-r5-wBY" userLabel="labelsViewContainer">
                                         <rect key="frame" x="127.5" y="8" width="239.5" height="285.5"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="bMp-ct-wAf">
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="bMp-ct-wAf">
                                                 <rect key="frame" x="8" y="8" width="223.5" height="269.5"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MDb-vg-JNt">
-                                                        <rect key="frame" x="0.0" y="0.0" width="223.5" height="1.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="223.5" height="22"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3y3-MX-8Ed">
-                                                                <rect key="frame" x="0.0" y="0.0" width="201.5" height="1.5"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="201.5" height="22"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                                                 <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="800" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoDark" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qMh-b7-b2q">
-                                                                <rect key="frame" x="201.5" y="0.0" width="22" height="1.5"/>
+                                                                <rect key="frame" x="201.5" y="0.0" width="22" height="22"/>
                                                                 <connections>
                                                                     <action selector="infoWebButtonPressed:" destination="y4U-Rz-VxX" eventType="primaryActionTriggered" id="pnG-w0-3p9"/>
                                                                 </connections>
@@ -105,25 +105,25 @@
                                                         </subviews>
                                                     </stackView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="genres" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hVH-ca-LNt">
-                                                        <rect key="frame" x="0.0" y="26.5" width="223.5" height="0.0"/>
+                                                        <rect key="frame" x="0.0" y="36" width="223.5" height="0.0"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="8Ci-mj-i3U">
-                                                        <rect key="frame" x="0.0" y="51.5" width="223.5" height="39"/>
+                                                        <rect key="frame" x="0.0" y="50" width="223.5" height="51.5"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Bv6-gU-C2n">
-                                                                <rect key="frame" x="0.0" y="0.0" width="223.5" height="0.0"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="223.5" height="12.5"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="seasons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AtK-y4-G1z">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="112" height="0.0"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="112" height="12.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="episodes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PBj-Iq-PPa">
-                                                                        <rect key="frame" x="112" y="0.0" width="111.5" height="0.0"/>
+                                                                        <rect key="frame" x="112" y="0.0" width="111.5" height="12.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -131,7 +131,7 @@
                                                                 </subviews>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleAspectFit" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="TEC-Bs-DRU">
-                                                                <rect key="frame" x="0.0" y="7" width="223.5" height="25"/>
+                                                                <rect key="frame" x="0.0" y="19.5" width="223.5" height="25"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Actually in production:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOq-1j-b2k">
                                                                         <rect key="frame" x="0.0" y="0.0" width="144.5" height="25"/>
@@ -158,7 +158,7 @@
                                                                 </constraints>
                                                             </stackView>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="500" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Votes (num)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKP-A4-Tvc">
-                                                                <rect key="frame" x="0.0" y="39" width="223.5" height="0.0"/>
+                                                                <rect key="frame" x="0.0" y="51.5" width="223.5" height="0.0"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                                                 <nil key="highlightedColor"/>
@@ -217,6 +217,7 @@
                         <outlet property="episodesLabel" destination="PBj-Iq-PPa" id="MlQ-CZ-1Nc"/>
                         <outlet property="genreLabel" destination="hVH-ca-LNt" id="QZ3-js-FdK"/>
                         <outlet property="infoDescTextView" destination="vaC-ca-qsb" id="WcV-g4-Del"/>
+                        <outlet property="infoWebButton" destination="qMh-b7-b2q" id="xGE-lq-hkG"/>
                         <outlet property="productionImageView" destination="jrh-AT-hSA" id="XbB-yK-3qu"/>
                         <outlet property="productionLabel" destination="bOq-1j-b2k" id="Uta-ch-TAE"/>
                         <outlet property="seasonsLabel" destination="AtK-y4-G1z" id="IFw-oL-M8O"/>
@@ -235,8 +236,8 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="MWg-A5-T73">
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
-                        <color key="separatorColor" red="0.1863011195596441" green="0.41739117345316068" blue="0.25876354568319099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" red="0.12516458384413268" green="0.28042017487046633" blue="0.173847755644323" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="standarCell" rowHeight="75" id="GPC-qj-iaL" customClass="standarTableViewCell">
                                 <rect key="frame" x="0.0" y="28" width="375" height="75"/>

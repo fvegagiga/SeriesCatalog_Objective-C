@@ -25,7 +25,7 @@
 @property (strong, nonatomic) NSURL *coverURL;
 @property (strong, nonatomic) NSURL *infoWeb;
 @property (nonatomic) BOOL inProduction;
-@property   (nonatomic) int votesAverage;
+@property (nonatomic) int votesAverage;
 @property (nonatomic) int votesCount;
 
 

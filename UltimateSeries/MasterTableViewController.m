@@ -77,6 +77,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
@@ -174,6 +175,16 @@
     return true;
 }
 
+-(BOOL)splitViewController:(UISplitViewController *)splitViewController showDetailViewController:(UIViewController *)vc sender:(id)sender
+{
+    UINavigationController *navController = (UINavigationController*)vc;
+    UIViewController *rootViewController = navController.topViewController;
+    
+    rootViewController.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
+    rootViewController.navigationItem.leftItemsSupplementBackButton = true;
+    
+    return false;
+}
 
 
 

@@ -27,7 +27,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
 @property (weak, nonatomic) IBOutlet UIView *backgroundViewGradient;
 
-
 @property (weak, nonatomic) IBOutlet UIButton *infoWebButton;
 
 - (IBAction)infoWebButtonPressed:(id)sender;
@@ -40,8 +39,6 @@
     [super viewDidLoad];
     
     self.title = self.aModel.title;
-
-
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -52,17 +49,17 @@
     gradient.frame = self.backgroundViewGradient.bounds;
     UIColor *firstColor = (id)[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:1.0f].CGColor;
     UIColor *secondColor = (id)[UIColor colorWithRed:0.27f green:0.67f blue:0.38f alpha:1.0f].CGColor;
-
+    
     gradient.colors = @[ firstColor, secondColor ];
     
     [self.backgroundViewGradient.layer insertSublayer:gradient atIndex:0];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size
-          withTransitionCoordinator:coordinator];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        
         [[[self.backgroundViewGradient.layer sublayers] objectAtIndex:0] setFrame:self.backgroundViewGradient.bounds];
 
     }];
@@ -103,18 +100,15 @@
     
     self.titleLabel.text = self.aModel.title;
     
-    //if(self.aModel.infoWeb.absoluteString.length == 0) {
     if(![self.aModel.infoWeb.scheme hasPrefix:@"http"]){
         self.infoWebButton.hidden = YES;
     }
     
+    self.genreLabel.text = [self.genreLabel.text stringByAppendingString:[self arrayToString: self.aModel.genres]];
+    self.seasonsLabel.text = [self.seasonsLabel.text stringByAppendingString:[NSString stringWithFormat:@"%d",self.aModel.seasons]];
+    self.episodesLabel.text = [self.episodesLabel.text stringByAppendingString:[NSString stringWithFormat:@"%d",self.aModel.episodes]];
     
-    self.genreLabel.text = [self arrayToString: self.aModel.genres];
-    self.seasonsLabel.text = [NSString stringWithFormat:@"Seasons: %d   ",self.aModel.seasons];
-    self.episodesLabel.text = [NSString stringWithFormat:@"Episodes: %d   ",self.aModel.episodes];
-    self.productionLabel.text = [NSString stringWithFormat:@"Actually in production:    "];
     // mostrar check si esta en produccion o aspas si no
-    
     NSLog(@"%@",self.aModel.inProduction ? @"YES":@"NO");
     
     if(!self.aModel.inProduction){
@@ -123,7 +117,7 @@
         self.productionImageView.image = [UIImage imageNamed:@"icon-Ok.png"];
     }
     
-    self.votesLabel.text = [NSString stringWithFormat:@"Votes (%d)   ",self.aModel.votesCount];
+    self.votesLabel.text = [self.votesLabel.text stringByAppendingString:[NSString stringWithFormat:@"(%d)",self.aModel.votesCount]];
     // mostrar la media de votos con estrellas
     
     self.infoDescTextView.text = self.aModel.infoDesc;
@@ -153,7 +147,6 @@
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 self.coverImageView.image = image;
             }];
-            
         }
         
         self.imageDataTaskForCover = nil;
@@ -177,7 +170,6 @@
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 self.dropbackImageView.image = image;
             }];
-            
         }
         
         self.imageDataTaskForBackDrop = nil;
@@ -191,11 +183,11 @@
     NSString *result = nil;
     
     if ([arrayGenres count] == 1) {
-        result = [@"Genre: " stringByAppendingString:[arrayGenres lastObject]];
+        result = [[arrayGenres lastObject] stringByAppendingString:@"."];
     } else if ([arrayGenres count] > 1){
-        result = [[@"Genres: " stringByAppendingString:[arrayGenres componentsJoinedByString:@", "]] stringByAppendingString:@"."];
+        result = [[arrayGenres componentsJoinedByString:@", "] stringByAppendingString:@"."];
     } else {
-        result = @"Genres: no defined.";
+        result = @"no defined.";
     }
     
     return result;

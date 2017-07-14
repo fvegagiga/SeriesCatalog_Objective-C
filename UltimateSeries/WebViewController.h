@@ -6,13 +6,14 @@
 //  Copyright © 2017 Fernando Vega Giganto. All rights reserved.
 //
 
+@import WebKit;
 #import <UIKit/UIKit.h>
 #import "SerieModel.h"
 
-@interface WebViewController : UIViewController <UIWebViewDelegate>
+@interface WebViewController : UIViewController <WKNavigationDelegate>
 
 @property (strong, nonatomic) NSURL *webURL;
-@property (weak, nonatomic) IBOutlet UIWebView *browser;
+
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityView;
 
 @end

@@ -157,7 +157,6 @@
 }
 
 
-//-(id)updateDetailWithDictionary:(NSDictionary *)aDict{
 -(void) updateModelWithDictionary:(NSDictionary *)aDict {
 
     self.genres = [self extractGenresFromJSONArray:[aDict objectForKey:@"genres"]];

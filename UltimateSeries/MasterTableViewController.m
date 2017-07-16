@@ -19,6 +19,9 @@
 @property (assign, nonatomic) int actualRow;
 @property (assign, nonatomic) int totalPages;
 
+@property (nonatomic) BOOL activeSearch;
+@property (strong, nonatomic) NSMutableArray *searchArray;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @end
 
@@ -28,9 +31,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     self.clearsSelectionOnViewWillAppear = NO;
     
     self.seriesArray = [NSMutableArray array];
+    self.searchArray = [NSMutableArray array];
     
     self.actualRow = 0;
     
@@ -39,13 +44,13 @@
     // inicializamos el modelo de datos:
     //          - tabla de la escena Master;
     //          - escena Detail con la información del primer registro
-    
     self.totalPages = 20;
-    
-    
     for (int i = 1; i < self.totalPages; i++){
         [self getMasterTableDataFromURL:i];
     }
+    
+    // Configuración de la barra de navegación de la escena MASTER
+    //UINavigationController *navControllerMaster = self.splitViewController.viewControllers[0];
     
     // Configuración de la barra de navegación de la escena DETAIL
     UINavigationController *navControllerDetail = self.splitViewController.viewControllers[1];
@@ -53,8 +58,6 @@
     SerieDetailViewController *rootDetailViewController = (SerieDetailViewController*)navControllerDetail.topViewController;
     rootDetailViewController.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
     self.navigationItem.leftItemsSupplementBackButton = true;
-    
-    
     
     
     // establecemos el color de degradado para las barras de navegación
@@ -66,9 +69,10 @@
 
     // Nos establecemos como delegados del SplitViewController
     self.splitViewController.delegate = self;
-
-    NSLog(@"LOG: continua la ejecución");
-    //rootDetailViewController.aModel = [self.seriesArray objectAtIndex:0];
+    
+    // Nos establecemos como delegados del SearchBar
+    self.searchBar.delegate = self;
+    self.activeSearch = NO;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -80,6 +84,12 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    if([self.searchBar.text isEqualToString:@""]){
+        self.activeSearch = false;
+    } else {
+        self.activeSearch = true;
+    }
     
     [self.tableView reloadData];
 }
@@ -97,7 +107,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.seriesArray count];
+    if (self.activeSearch){
+        return [self.searchArray count];
+    } else {
+        return [self.seriesArray count];
+    }
 }
 
 
@@ -108,7 +122,14 @@
     
     standarTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standarCell" forIndexPath:indexPath];
 
-    SerieModel *xModel = self.seriesArray[indexPath.row];
+    SerieModel *xModel = nil;
+    
+    if (self.activeSearch) {
+        xModel = self.searchArray[indexPath.row];
+
+    } else {
+        xModel = self.seriesArray[indexPath.row];
+    }
 
     cell.serieImageView.image = [UIImage imageNamed:@"load-image.png"];
     
@@ -122,16 +143,31 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.actualRow = (int)indexPath.row;
-    SerieModel *selectedSerieModel = [self.seriesArray objectAtIndex:indexPath.row];
-    
-    NSLog(@"id de la serie seleccionada: %d", selectedSerieModel.idSerie);
-    
-    if (selectedSerieModel.infoDesc == nil) {
-        // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
-        [self getModelDataFromURL:selectedSerieModel.idSerie];
+    // Si estamos en modo "busqueda" tenemos que mostrar la información equivalente del array original de datos
+    if(self.activeSearch){
+        NSString *searchTitleSelected = [[self.searchArray objectAtIndex:indexPath.row] title];
+        
+        NSLog(@"estamos en busqueda: seleleccionamos %@", searchTitleSelected);
+        
+        for (int i = 0; i< self.seriesArray.count; i++ ){
+            if ([[self.seriesArray[i] title] isEqualToString:searchTitleSelected]){
+                self.aModel = [self.seriesArray objectAtIndex:i];
+                    NSLog(@"NUM POS tabla: %d", (int)indexPath.row);
+                    NSLog(@"NUM POS array: %d", i);
+            }
+        }
     } else {
-        [self performSegueWithIdentifier:@"showDetail" sender:selectedSerieModel];
+        self.actualRow = (int)indexPath.row;
+        self.aModel = [self.seriesArray objectAtIndex:indexPath.row];
+    }
+    
+    NSLog(@"id de la serie seleccionada: %d", self.aModel.idSerie);
+
+    if (self.aModel.infoDesc == nil) {
+        // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
+        [self getModelDataFromURL:self.aModel.idSerie];
+    } else {
+        [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
     }
 }
 
@@ -172,6 +208,7 @@
 #pragma mark - UISplitViewControllerDelegate
 
 -(bool)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController{
+    
     return true;
 }
 
@@ -183,9 +220,12 @@
     rootViewController.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
     rootViewController.navigationItem.leftItemsSupplementBackButton = true;
     
+    if (![self.searchBar.text isEqualToString:@""]){
+        NSLog(@"volvemos y tengo: %d", (int)self.searchArray.count);
+    }
+    
     return false;
 }
-
 
 
 #pragma mark - Navigation
@@ -222,10 +262,7 @@
     NSString *apiKeyUrl = @"?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
     NSString *extrasUrl = @"&language=en-US=pages&page=";
 
-
     NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@%d", baseUrl, sectionUrl, apiKeyUrl, extrasUrl, pageNum];
-
-    NSLog(@"%@", finalUrl);
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:finalUrl]];
@@ -242,7 +279,6 @@
                                
                                if (parsedJSONArray != nil) {
                                    // No ha habido error
-                                   SerieModel *serieActual = nil;
                                    
                                    // Carga total de la tabla
 
@@ -254,8 +290,8 @@
                                                ([dict objectForKey:@"overview"] != (id)[NSNull null])    &&
                                                (![[dict objectForKey:@"overview"] isEqualToString:@""]))
                                            {
-                                               serieActual = [[SerieModel alloc] initMasterWithDictionary:dict];
-                                               [self.seriesArray addObject:serieActual];
+                                               self.aModel = [[SerieModel alloc] initMasterWithDictionary:dict];
+                                               [self.seriesArray addObject:self.aModel];
                                            }
                                            else {
                                                NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
@@ -265,14 +301,14 @@
                                        [self.tableView reloadData];
                                        
                                        // actualizamos el contenido del primer item
-                                       serieActual = [self.seriesArray objectAtIndex:self.actualRow];
+                                       self.aModel = [self.seriesArray objectAtIndex:self.actualRow];
                                        
                                        // inicializamos la pantalla de detalle con la primera serie de la lista
                                        // solo si estamos en ipad
                                        
                                        if (!(IS_IPHONE) && pageNum == 1) {
                                            [self selectFirstRow];
-                                           [self getModelDataFromURL:serieActual.idSerie];
+                                           [self getModelDataFromURL:self.aModel.idSerie];
                                        }
                                } else {
                                    NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
@@ -321,16 +357,13 @@
                                                              if (parsedJSONArray != nil) {
                                                                  // No ha habido error
                                                                  
-                                                                    // Actualizacion de un item concreto en la vista de detalle
-                                                                     
-                                                                     SerieModel *serieActual = [self.seriesArray objectAtIndex:self.actualRow];
-                                                                     
-                                                                     NSLog(@"Llegamos con esto: %@", finalUrl);
-                                                                     
-                                                                     [serieActual updateModelWithDictionary:parsedJSONArray];
-                                                                     NSLog(@"LOG: Termino la carga de datos");
-                                                                     
-                                                                     [self performSegueWithIdentifier:@"showDetail" sender:serieActual];
+                                                                 // Actualizacion de un item concreto en la vista de detalle
+                                                                 
+                                                                 [self.aModel updateModelWithDictionary:parsedJSONArray];
+                                                                 
+                                                                 NSLog (@"aqui vamos: %@", self.aModel.backdropURL);
+                                                                 
+                                                                 [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
                                                                  
                                                              } else {
                                                                  NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
@@ -369,6 +402,56 @@
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
     // optional:
     // [self tableView:myTable didSelectRowAtIndexPath:indexPath];
+}
+
+
+#pragma mark - UISearchBarDelegate
+
+-(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+    self.activeSearch = YES;
+}
+
+-(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
+    self.activeSearch = NO;
+}
+
+
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [searchBar resignFirstResponder];
+}
+
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSLog(@"search button clic");
+    self.activeSearch = NO;
+}
+
+-(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    
+    self.searchArray = nil;
+    self.searchArray = [NSMutableArray array];
+    
+    if ([searchText isEqualToString:@""]){
+        self.activeSearch = NO;
+
+    } else {
+        self.activeSearch = YES;
+    }
+
+    NSLog(@"activeSearch: %@", self.activeSearch ? @"YES" : @"NO");
+    
+    if (self.activeSearch) {
+        for (int i = 0; i< self.seriesArray.count; i++) {
+            if ([[self.seriesArray[i] title] rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                [self.searchArray addObject:self.seriesArray[i]];
+            }
+        }
+    }
+    
+    [self.tableView reloadData];
+}
+
+-(void)searchBarBookmarkButtonClicked:(UISearchBar *)searchBar{
+        NSLog(@"bookmark button clic");
 }
 
 @end

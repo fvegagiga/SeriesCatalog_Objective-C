@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SerieModel.h"
 
-@interface MasterTableViewController : UITableViewController <UISplitViewControllerDelegate>
+@interface MasterTableViewController : UITableViewController <UISplitViewControllerDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) NSMutableArray *seriesArray;
 

@@ -249,8 +249,11 @@
                                        NSArray *itemsArray = [parsedJSONArray objectForKey:@"results"];
                                        
                                        for (NSDictionary *dict in itemsArray){
-                                           
-                                           if ([dict objectForKey:@"poster_path"] != (id)[NSNull null]) {
+
+                                           if (([dict objectForKey:@"poster_path"] != (id)[NSNull null]) &&
+                                               ([dict objectForKey:@"overview"] != (id)[NSNull null])    &&
+                                               (![[dict objectForKey:@"overview"] isEqualToString:@""]))
+                                           {
                                                serieActual = [[SerieModel alloc] initMasterWithDictionary:dict];
                                                [self.seriesArray addObject:serieActual];
                                            }
@@ -271,12 +274,9 @@
                                            [self selectFirstRow];
                                            [self getModelDataFromURL:serieActual.idSerie];
                                        }
-                                   
-                                   
                                } else {
                                    NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
                                }
-                            
                            } else {
                                NSLog(@"Error al descargar datos del servidor: %@", error.localizedDescription);
                            }
@@ -331,8 +331,6 @@
                                                                      NSLog(@"LOG: Termino la carga de datos");
                                                                      
                                                                      [self performSegueWithIdentifier:@"showDetail" sender:serieActual];
-                                                                 
-                                                                 
                                                                  
                                                              } else {
                                                                  NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);

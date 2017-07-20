@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "SerieModel.h"
+#import <FontAwesomeKit.h>
+#import <MGSwipeTableCell.h>
 
-@interface MasterTableViewController : UITableViewController <UISplitViewControllerDelegate, UISearchBarDelegate>
+@interface MasterTableViewController : UITableViewController <UISplitViewControllerDelegate,
+                                                                UISearchBarDelegate,
+                                                                MGSwipeTableCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray *seriesArray;
 

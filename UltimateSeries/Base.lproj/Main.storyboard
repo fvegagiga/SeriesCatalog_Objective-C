@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XjI-b5-RDq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XjI-b5-RDq">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -17,7 +17,7 @@
             <objects>
                 <navigationController autoresizesArchivedViewToFullSize="NO" title="Detail" id="NcP-F4-mQF" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="UeW-5c-YJc" customClass="CRGradientNavigationBar">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="UeW-5c-YJc" customClass="CRGradientNavigationBar">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -229,14 +229,14 @@
             </objects>
             <point key="canvasLocation" x="1024.8" y="1205.8470764617691"/>
         </scene>
-        <!--Title-->
+        <!--Series-->
         <scene sceneID="uJH-FY-2iD">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="rlF-Qt-vDP" customClass="MasterTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="MWg-A5-T73">
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="backgroundColor" red="0.0087445184839999995" green="0.019803738219999999" blue="0.01209672859" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="separatorColor" red="0.12516458384413268" green="0.28042017487046633" blue="0.173847755644323" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="standarCell" rowHeight="75" id="GPC-qj-iaL" customClass="standarTableViewCell">
@@ -256,9 +256,8 @@
                                             <rect key="frame" x="104" y="10" width="265" height="54.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                            <color key="highlightedColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <color key="shadowColor" red="0.18630111960000001" green="0.41739117349999999" blue="0.25876354569999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <size key="shadowOffset" width="1" height="0.0"/>
+                                            <color key="highlightedColor" red="0.93808486186495421" green="1" blue="0.19989285813987268" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <size key="shadowOffset" width="0.0" height="0.0"/>
                                         </label>
                                     </subviews>
                                     <constraints>
@@ -284,7 +283,7 @@
                             <outlet property="delegate" destination="rlF-Qt-vDP" id="9dl-Sg-Dvj"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Title" id="TDp-EV-Zhz">
+                    <navigationItem key="navigationItem" title="Series" id="TDp-EV-Zhz">
                         <connections>
                             <outlet property="titleView" destination="zut-b1-PEc" id="jg7-VV-wCP"/>
                         </connections>
@@ -309,7 +308,7 @@
         <scene sceneID="EJt-Om-ikf">
             <objects>
                 <navigationController title="Series" id="hcA-JR-1zQ" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="Qwo-lV-blz" customClass="CRGradientNavigationBar">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="Qwo-lV-blz" customClass="CRGradientNavigationBar">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

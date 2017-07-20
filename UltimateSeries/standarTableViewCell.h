@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MGSwipeTableCell.h>
 
-@interface standarTableViewCell : UITableViewCell
+@interface standarTableViewCell : MGSwipeTableCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *serieImageView;
 @property (weak, nonatomic) IBOutlet UILabel *serieLabel;

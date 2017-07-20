@@ -10,6 +10,7 @@
 #import "standarTableViewCell.h"
 #import "SerieDetailViewController.h"
 #import <CRGradientNavigationBar.h>
+#import <HTMLReader.h>
 
 #define IS_IPHONE UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone
 
@@ -22,6 +23,8 @@
 @property (nonatomic) BOOL activeSearch;
 @property (strong, nonatomic) NSMutableArray *searchArray;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+
+@property (copy, nonatomic) NSString *apiKey;
 
 @end
 
@@ -44,8 +47,11 @@
     // inicializamos el modelo de datos:
     //          - tabla de la escena Master;
     //          - escena Detail con la información del primer registro
-    self.totalPages = 20;
-    for (int i = 1; i < self.totalPages; i++){
+    
+    self.apiKey = [self getApiKeyFromURL];
+    
+    self.totalPages = 25;
+    for (int i = self.totalPages; i > 0; i--){
         [self getMasterTableDataFromURL:i];
     }
     
@@ -65,6 +71,7 @@
     UIColor *secondColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:1.0f];
     NSArray *colors = [NSArray arrayWithObjects:firstColor, secondColor, nil];
     
+    // Libreria CRGradientNavigationBar para el gradiente en la barra de navegación
     [[CRGradientNavigationBar appearance] setBarTintGradientColors:colors];
 
     // Nos establecemos como delegados del SplitViewController
@@ -82,6 +89,11 @@
 }
 
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
@@ -92,6 +104,7 @@
     }
     
     [self.tableView reloadData];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,12 +144,37 @@
         xModel = self.seriesArray[indexPath.row];
     }
 
+    cell.serieLabel.text = xModel.title;
     cell.serieImageView.image = [UIImage imageNamed:@"load-image.png"];
     
-    //cell.serieImageView.image = xModel.cover;
-    cell.serieLabel.text = xModel.title;
-    
     [cell showImageFromURL:xModel.coverURL];
+    
+    // configuramos los iconos de los botones
+    // uso de la librería FontAwesomeKit para los iconos
+    // y la librería MGSwipeTableCell para los menus en las celdas
+    
+    NSError *error;
+    FAKFontAwesome *starIcon = [FAKFontAwesome  iconWithIdentifier:@"fa-heart" size:25 error:&error];
+    
+    UIColor *buttonColor = (id)[UIColor colorWithRed:0.35f green:0.75f blue:0.42f alpha:1.0f];
+    
+    [starIcon addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
+    UIImage *iconImageFav = [starIcon imageWithSize:CGSizeMake(50, 50)];
+    
+    // configuramos los botones de la izquierda
+    cell.leftButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:iconImageFav backgroundColor:nil]];
+    cell.leftSwipeSettings.transition = MGSwipeTransition3D;
+    
+    cell.layer.cornerRadius = 30;
+    cell.clipsToBounds = true;
+    cell.swipeBackgroundColor = buttonColor;
+    
+    UIView *myBackView = [[UIView alloc] initWithFrame:cell.frame];
+    myBackView.backgroundColor = [UIColor colorWithRed:0.11 green:0.26 blue:0.15 alpha:1];
+    [cell setSelectedBackgroundView:myBackView];
+    
+    // delegado MGSwipeTableCell
+    cell.delegate = self;
     
     return cell;
 }
@@ -169,6 +207,9 @@
     } else {
         [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
     }
+    
+    // al seleccionar una fila de la tabla, quitamos el foco del campo de busqueda
+    [self.searchBar resignFirstResponder];
 }
 
 /*
@@ -204,6 +245,34 @@
     return YES;
 }
 */
+#pragma mark - MGSwipeTableCellDelegate
+
+-(void)swipeTableCell:(MGSwipeTableCell *)cell didChangeSwipeState:(MGSwipeState)state gestureIsActive:(BOOL)gestureIsActive{
+    
+    gestureIsActive ? NSLog(@"si esta activa"): NSLog(@"no esta activa");
+
+    
+}
+
+-(void)swipeTableCellWillBeginSwiping:(MGSwipeTableCell *)cell{
+    self.activeSearch? NSLog(@"ATENCION!: estamos en modo search") : NSLog(@"ATENCION!: no estamos en modo search");
+    [self.searchBar resignFirstResponder];
+
+}
+
+
+
+-(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index direction:(MGSwipeDirection)direction fromExpansion:(BOOL)fromExpansion {
+    
+    NSLog(@"-----------");
+    NSIndexPath *indexpath = [self.tableView indexPathForCell:cell];
+    
+    NSLog(@"%ld añadido a favoritos", (long)indexpath.row);
+    NSLog(@"-----------");
+
+    return YES;
+}
+
 
 #pragma mark - UISplitViewControllerDelegate
 
@@ -249,23 +318,53 @@
 
 
 
-#pragma mark - JSON
+#pragma mark - Server
 
+-(NSString *)getApiKeyFromURL {
+    
+//    LLamada sincrona para recibir el api-key
+//    original: https://notepad.pw/fvg0902_intent
+    
+//    NSURL *apiURL = [NSURL URLWithString: @"https://notepad.pw/markdown/f4kshl83l"];
+//    NSData *apiData = [NSData dataWithContentsOfURL:apiURL];
+//    
+//    NSString *apiWebStr = [[NSString alloc] initWithData:apiData encoding:NSUTF8StringEncoding];
+//    
+//    HTMLDocument *document = [HTMLDocument documentWithString:apiWebStr];
+//    
+//    //NSString *apiKeyString = [[document firstNodeMatchingSelector:@"p"] textContent];
+//    NSArray *apiKeyElement = [document nodesMatchingParsedSelector:@"div"];
+//    NSString *apiKeyString = [[apiKeyElement[2] firstNodeMatchingSelector:@"p"] textContent];
+
+    NSString *apikeyStr = @"7d34f86cc14ecd73a16b9d1838c88a13";
+    return apikeyStr;
+}
+
+-(NSString *)getUrlAddress:(int) idForUpdateItem {
+    
+    NSString *baseUrl = @"https://api.themoviedb.org/3/tv/";
+    NSString *sectionUrl = nil;
+    NSString *apiKeyUrl = @"?api_key=";
+    NSString *extrasUrl = nil;
+    
+    if (idForUpdateItem < 0) {
+        sectionUrl = @"popular";
+        extrasUrl = @"&language=en-US&page=";
+    }
+    else {
+        sectionUrl = [NSString stringWithFormat:@"%d",idForUpdateItem];
+        extrasUrl = @"&language=en-US";
+    }
+    
+    return [NSString stringWithFormat:@"%@%@%@%@%@", baseUrl, sectionUrl, apiKeyUrl, self.apiKey, extrasUrl];
+}
 
 -(void)getMasterTableDataFromURL:(int) pageNum {
     
-    // API key: 7d34f86cc14ecd73a16b9d1838c88a13
-    // Example: https://api.themoviedb.org/3/movie/550?api_key=7d34f86cc14ecd73a16b9d1838c88a13
-    
-    NSString *baseUrl = @"https://api.themoviedb.org/3/tv/";
-    NSString *sectionUrl = @"popular";
-    NSString *apiKeyUrl = @"?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
-    NSString *extrasUrl = @"&language=en-US=pages&page=";
+    NSString *pageNumString = [NSString stringWithFormat:@"%d", pageNum];
 
-    NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@%d", baseUrl, sectionUrl, apiKeyUrl, extrasUrl, pageNum];
-    
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:finalUrl]];
+    [request setURL:[NSURL URLWithString:[[self getUrlAddress:-1] stringByAppendingString:pageNumString]]];
     
     NSURLSessionDataTask *task = [[self getURLSession] dataTaskWithRequest:request
                                                          completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
@@ -286,14 +385,17 @@
                                        
                                        for (NSDictionary *dict in itemsArray){
 
+                                           // motivos de descarte de una serie
                                            if (([dict objectForKey:@"poster_path"] != (id)[NSNull null]) &&
                                                ([dict objectForKey:@"overview"] != (id)[NSNull null])    &&
-                                               (![[dict objectForKey:@"overview"] isEqualToString:@""]))
+                                               (![[dict objectForKey:@"overview"] isEqualToString:@""])  &&
+                                               ([dict objectForKey:@"backdrop_path"] != (id)[NSNull null]))
                                            {
                                                self.aModel = [[SerieModel alloc] initMasterWithDictionary:dict];
                                                [self.seriesArray addObject:self.aModel];
-                                           }
-                                           else {
+                                               
+                                               NSLog(@"Serie insertada: %@ - pagina %d", [dict objectForKey:@"name"], pageNum);
+                                           } else {
                                                NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
                                            }
                                        }
@@ -307,7 +409,7 @@
                                        // solo si estamos en ipad
                                        
                                        if (!(IS_IPHONE) && pageNum == 1) {
-                                           [self selectFirstRow];
+                                           //[self selectFirstRow];
                                            [self getModelDataFromURL:self.aModel.idSerie];
                                        }
                                } else {
@@ -321,28 +423,14 @@
     [task resume];
 }
 
+
+
 -(void)getModelDataFromURL:(int) idForUpdateItem {
     
-    // API key: 7d34f86cc14ecd73a16b9d1838c88a13
-    // Example: https://api.themoviedb.org/3/movie/550?api_key=7d34f86cc14ecd73a16b9d1838c88a13
-    
-    NSString *baseUrl = @"https://api.themoviedb.org/3/tv/";
-    NSString *sectionUrl = nil;
-    NSString *apiKeyUrl = @"?api_key=7d34f86cc14ecd73a16b9d1838c88a13";
-    NSString *extrasUrl = @"&language=en-US";
-    
-    if (idForUpdateItem < 0){
-        sectionUrl = @"popular";
-    } else {
-        sectionUrl = [NSString stringWithFormat:@"%d",idForUpdateItem];
-    }
-    
-    NSString *finalUrl = [NSString stringWithFormat:@"%@%@%@%@", baseUrl, sectionUrl, apiKeyUrl, extrasUrl];
-    
-    NSLog(@"%@", finalUrl);
+    NSLog (@"Recuperamos informacion completa de: %d", self.aModel.idSerie);
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString:finalUrl]];
+    [request setURL:[NSURL URLWithString:[self getUrlAddress:idForUpdateItem]]];
     
     NSURLSessionDataTask *task = [[self getURLSession] dataTaskWithRequest:request
                                                          completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error)
@@ -356,7 +444,6 @@
                                                              
                                                              if (parsedJSONArray != nil) {
                                                                  // No ha habido error
-                                                                 
                                                                  // Actualizacion de un item concreto en la vista de detalle
                                                                  
                                                                  [self.aModel updateModelWithDictionary:parsedJSONArray];
@@ -393,25 +480,27 @@
 }
 
 
-// Damos efecto de selección a la primera fila de la tabla si estamos en modo ipad
-
 -(void)selectFirstRow {
+    // Damos efecto de selección a la primera fila de la tabla si estamos en modo ipad
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    // optional:
-    // [self tableView:myTable willSelectRowAtIndexPath:indexPath];
+    
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionTop];
-    // optional:
-    // [self tableView:myTable didSelectRowAtIndexPath:indexPath];
 }
 
 
 #pragma mark - UISearchBarDelegate
 
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+    NSLog(@"activado search mode");
+    self.searchArray = nil;
+    self.searchArray = self.seriesArray;
+    
     self.activeSearch = YES;
 }
 
 -(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
+    NSLog(@"desactivado search mode");
+    [searchBar resignFirstResponder];
     self.activeSearch = NO;
 }
 
@@ -422,6 +511,7 @@
 
 -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     NSLog(@"search button clic");
+    [searchBar resignFirstResponder];
     self.activeSearch = NO;
 }
 
@@ -446,7 +536,6 @@
             }
         }
     }
-    
     [self.tableView reloadData];
 }
 

@@ -51,7 +51,7 @@
     self.apiKey = [self getApiKeyFromURL];
     
     self.totalPages = 25;
-    for (int i = self.totalPages; i > 0; i--){
+    for (int i = 1; i <= self.totalPages; i++){
         [self getMasterTableDataFromURL:i];
     }
     
@@ -103,7 +103,7 @@
         self.activeSearch = true;
     }
     
-    [self.tableView reloadData];
+    //[self.tableView reloadData];
 
 }
 
@@ -179,7 +179,7 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)extractCellInfo: (NSIndexPath*) indexPath {
     
     // Si estamos en modo "busqueda" tenemos que mostrar la información equivalente del array original de datos
     if(self.activeSearch){
@@ -190,8 +190,8 @@
         for (int i = 0; i< self.seriesArray.count; i++ ){
             if ([[self.seriesArray[i] title] isEqualToString:searchTitleSelected]){
                 self.aModel = [self.seriesArray objectAtIndex:i];
-                    NSLog(@"NUM POS tabla: %d", (int)indexPath.row);
-                    NSLog(@"NUM POS array: %d", i);
+                NSLog(@"NUM POS tabla: %d", (int)indexPath.row);
+                NSLog(@"NUM POS array: %d", i);
             }
         }
     } else {
@@ -200,7 +200,7 @@
     }
     
     NSLog(@"id de la serie seleccionada: %d", self.aModel.idSerie);
-
+    
     if (self.aModel.infoDesc == nil) {
         // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
         [self getModelDataFromURL:self.aModel.idSerie];
@@ -210,7 +210,15 @@
     
     // al seleccionar una fila de la tabla, quitamos el foco del campo de busqueda
     [self.searchBar resignFirstResponder];
+    
 }
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self extractCellInfo:indexPath];
+}
+
 
 /*
 // Override to support conditional editing of the table view.
@@ -248,28 +256,32 @@
 #pragma mark - MGSwipeTableCellDelegate
 
 -(void)swipeTableCell:(MGSwipeTableCell *)cell didChangeSwipeState:(MGSwipeState)state gestureIsActive:(BOOL)gestureIsActive{
-    
     gestureIsActive ? NSLog(@"si esta activa"): NSLog(@"no esta activa");
-
-    
 }
 
 -(void)swipeTableCellWillBeginSwiping:(MGSwipeTableCell *)cell{
     self.activeSearch? NSLog(@"ATENCION!: estamos en modo search") : NSLog(@"ATENCION!: no estamos en modo search");
+    
+    // eliminamos el foco del campo de búsqueda cuando desplazamos una celda
     [self.searchBar resignFirstResponder];
+    
+    if ([self.searchBar.text isEqualToString:@""]){
+        self.activeSearch = NO;
+    }
+    else {
+        self.activeSearch = YES;
+    }
 
 }
 
-
-
 -(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index direction:(MGSwipeDirection)direction fromExpansion:(BOOL)fromExpansion {
     
-    NSLog(@"-----------");
     NSIndexPath *indexpath = [self.tableView indexPathForCell:cell];
     
-    NSLog(@"%ld añadido a favoritos", (long)indexpath.row);
-    NSLog(@"-----------");
-
+    // seleccionamos la celda que se acaba de marcar como favorita para que los datos concuerden (master / detail)
+    [self.tableView selectRowAtIndexPath:indexpath animated:true scrollPosition:false];
+    [self extractCellInfo:indexpath];
+    
     return YES;
 }
 
@@ -308,7 +320,6 @@
         SerieModel *selectedSerieModel = sender;
         
         destination.aModel = selectedSerieModel;
-        NSLog(@"LOG: Ya lo cogi");
         
         destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         self.navigationItem.leftItemsSupplementBackButton = true;
@@ -491,7 +502,8 @@
 #pragma mark - UISearchBarDelegate
 
 -(void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
-    NSLog(@"activado search mode");
+
+    // inicializamos el array que contiene los resultados de búsqueda
     self.searchArray = nil;
     self.searchArray = self.seriesArray;
     
@@ -501,9 +513,14 @@
 -(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
     NSLog(@"desactivado search mode");
     [searchBar resignFirstResponder];
-    self.activeSearch = NO;
+    
+    if ([searchBar.text isEqualToString:@""]){
+        self.activeSearch = NO;
+    }
+    else {
+        self.activeSearch = YES;
+    }
 }
-
 
 -(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [searchBar resignFirstResponder];

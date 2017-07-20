@@ -44,6 +44,8 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    
+    // creamos una capa nueva de la vista para poder mostrar un degradado de fondo
     CAGradientLayer *gradient = [CAGradientLayer layer];
     
     gradient.frame = self.backgroundViewGradient.bounds;
@@ -58,6 +60,7 @@
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
+    // para recalcular el tamaño de la capa de degradado en caso de girar el dispositivo
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         
         [[[self.backgroundViewGradient.layer sublayers] objectAtIndex:0] setFrame:self.backgroundViewGradient.bounds];

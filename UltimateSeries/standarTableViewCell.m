@@ -8,8 +8,6 @@
 
 #import "standarTableViewCell.h"
 
-
-
 @interface standarTableViewCell ()
 
 @property (nonatomic, strong) NSURLSessionDataTask *imageDataTask;

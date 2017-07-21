@@ -8,6 +8,7 @@
 
 #import "SerieDetailViewController.h"
 #import "WebViewController.h"
+#import <FontAwesomeKit.h>
 
 @interface SerieDetailViewController ()
 
@@ -56,6 +57,7 @@
     
     [self.backgroundViewGradient.layer insertSublayer:gradient atIndex:0];
 }
+
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
@@ -120,8 +122,42 @@
         self.productionImageView.image = [UIImage imageNamed:@"icon-Ok.png"];
     }
     
-    self.votesLabel.text = [self.votesLabel.text stringByAppendingString:[NSString stringWithFormat:@"(%d)",self.aModel.votesCount]];
-    // mostrar la media de votos con estrellas
+
+    if ([self.votesLabel.text length] <= 6){
+        
+        // mostrar la media de votos con estrellas
+        // creamos icono para mostrar los votos
+        
+        NSMutableArray *starIconsArray = [NSMutableArray array];
+        
+        for (int i = 0; i < self.aModel.votesAverage; i++){
+            NSError *error;
+            FAKFontAwesome *starIcon = [FAKFontAwesome  iconWithIdentifier:@"fa-star" size:15 error:&error];
+            UIColor *buttonColor = (id)[UIColor colorWithRed:1.0f green:0.82f blue:0.22f alpha:1.0f];
+            [starIcon addAttribute:NSForegroundColorAttributeName value:buttonColor];
+            
+            starIcon.drawingPositionAdjustment = UIOffsetMake(i * -(starIcon.iconFontSize), starIcon.iconFontSize * 0.4);
+            
+            [starIconsArray addObject:starIcon];
+        }
+        
+        NSLog(@"Tengo: %lu", (unsigned long)starIconsArray.count);
+        
+        UIImage *finalImageStars = [UIImage imageWithStackedIcons:starIconsArray imageSize:CGSizeMake(350, 25)];
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        attachment.image = finalImageStars;
+        NSAttributedString *attachmentString = [NSAttributedString attributedStringWithAttachment:attachment];
+        NSString *textVotes = [self.votesLabel.text stringByAppendingString:[NSString stringWithFormat:@"(%d)",self.aModel.votesCount]];
+        
+        NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc] initWithString:textVotes];
+        [finalString appendAttributedString:attachmentString];
+        
+        self.votesLabel.attributedText = finalString;
+        
+    }
+    
+    
     
     self.infoDescTextView.text = self.aModel.infoDesc;
 

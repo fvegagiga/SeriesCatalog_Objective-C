@@ -233,11 +233,12 @@
         <scene sceneID="uJH-FY-2iD">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="rlF-Qt-vDP" customClass="MasterTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="MWg-A5-T73">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" rowHeight="75" sectionHeaderHeight="28" sectionFooterHeight="28" id="MWg-A5-T73">
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0087445184839999995" green="0.019803738219999999" blue="0.01209672859" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <color key="separatorColor" red="0.12516458384413268" green="0.28042017487046633" blue="0.173847755644323" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="standarCell" rowHeight="75" id="GPC-qj-iaL" customClass="standarTableViewCell">
                                 <rect key="frame" x="0.0" y="28" width="375" height="75"/>
@@ -283,11 +284,21 @@
                             <outlet property="delegate" destination="rlF-Qt-vDP" id="9dl-Sg-Dvj"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="0UH-6s-4Yd"/>
+                        <barButtonItem systemItem="action" id="pa1-6A-n4z">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="actionButtonPressed:" destination="rlF-Qt-vDP" id="JQj-9C-Ttd"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Series" id="TDp-EV-Zhz">
                         <connections>
                             <outlet property="titleView" destination="zut-b1-PEc" id="jg7-VV-wCP"/>
                         </connections>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="black"/>
                     <connections>
                         <outlet property="searchBar" destination="zut-b1-PEc" id="tE5-VA-1j3"/>
                         <segue destination="NcP-F4-mQF" kind="showDetail" identifier="showDetail" id="r6H-JT-cvV"/>
@@ -301,7 +312,7 @@
                     <textInputTraits key="textInputTraits"/>
                 </searchBar>
             </objects>
-            <point key="canvasLocation" x="1026" y="360"/>
+            <point key="canvasLocation" x="1462" y="360"/>
         </scene>
         <!--Master VC-->
         <scene sceneID="EJt-Om-ikf">

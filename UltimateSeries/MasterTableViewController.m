@@ -22,9 +22,12 @@
 
 @property (nonatomic) BOOL activeSearch;
 @property (strong, nonatomic) NSMutableArray *searchArray;
-@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @property (copy, nonatomic) NSString *apiKey;
+@property (nonatomic) BOOL firstTimeObject;
+
+- (IBAction)actionButtonPressed:(id)sender;
 
 @end
 
@@ -34,13 +37,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     self.clearsSelectionOnViewWillAppear = NO;
     
     self.seriesArray = [NSMutableArray array];
     self.searchArray = [NSMutableArray array];
     
     self.actualRow = 0;
+    self.firstTimeObject = YES;
     
     self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
     
@@ -54,6 +57,7 @@
     for (int i = 1; i <= self.totalPages; i++){
         [self getMasterTableDataFromURL:i];
     }
+    
     
     // Configuración de la barra de navegación de la escena MASTER
     //UINavigationController *navControllerMaster = self.splitViewController.viewControllers[0];
@@ -81,8 +85,13 @@
     self.searchBar.delegate = self;
     self.activeSearch = NO;
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Establecemos las propiedades de la toolbar
+    [self.navigationController.toolbar setBarStyle:UIBarStyleBlackTranslucent];
+    UIColor *toolBarColor = [UIColor colorWithRed:0.07f green:0.18f blue:0.11f alpha:1.0f];
+
+    self.navigationController.toolbar.barTintColor = toolBarColor;
+
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -92,6 +101,7 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    [self.navigationController setToolbarHidden:NO animated:YES];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -103,8 +113,12 @@
         self.activeSearch = true;
     }
     
-    //[self.tableView reloadData];
+}
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    
+    [self.navigationController setToolbarHidden:YES animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -154,12 +168,12 @@
     // y la librería MGSwipeTableCell para los menus en las celdas
     
     NSError *error;
-    FAKFontAwesome *starIcon = [FAKFontAwesome  iconWithIdentifier:@"fa-heart" size:25 error:&error];
+    FAKFontAwesome *heartIcon = [FAKFontAwesome  iconWithIdentifier:@"fa-heart" size:25 error:&error];
     
     UIColor *buttonColor = (id)[UIColor colorWithRed:0.35f green:0.75f blue:0.42f alpha:1.0f];
     
-    [starIcon addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
-    UIImage *iconImageFav = [starIcon imageWithSize:CGSizeMake(50, 50)];
+    [heartIcon addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
+    UIImage *iconImageFav = [heartIcon imageWithSize:CGSizeMake(50, 50)];
     
     // configuramos los botones de la izquierda
     cell.leftButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:iconImageFav backgroundColor:nil]];
@@ -391,38 +405,39 @@
                                    // No ha habido error
                                    
                                    // Carga total de la tabla
-
-                                       NSArray *itemsArray = [parsedJSONArray objectForKey:@"results"];
+                                   
+                                   NSArray *itemsArray = [parsedJSONArray objectForKey:@"results"];
+                                   
+                                   for (NSDictionary *dict in itemsArray){
                                        
-                                       for (NSDictionary *dict in itemsArray){
-
-                                           // motivos de descarte de una serie
-                                           if (([dict objectForKey:@"poster_path"] != (id)[NSNull null]) &&
-                                               ([dict objectForKey:@"overview"] != (id)[NSNull null])    &&
-                                               (![[dict objectForKey:@"overview"] isEqualToString:@""])  &&
-                                               ([dict objectForKey:@"backdrop_path"] != (id)[NSNull null]))
-                                           {
-                                               self.aModel = [[SerieModel alloc] initMasterWithDictionary:dict];
-                                               [self.seriesArray addObject:self.aModel];
-                                               
-                                               NSLog(@"Serie insertada: %@ - pagina %d", [dict objectForKey:@"name"], pageNum);
-                                           } else {
-                                               NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
-                                           }
+                                       // motivos de descarte de una serie (no tener informados ciertos campos)
+                                       if (([dict objectForKey:@"poster_path"] != (id)[NSNull null]) &&
+                                           ([dict objectForKey:@"overview"] != (id)[NSNull null])    &&
+                                           (![[dict objectForKey:@"overview"] isEqualToString:@""])  &&
+                                           ([dict objectForKey:@"backdrop_path"] != (id)[NSNull null]))
+                                       {
+                                           self.aModel = [[SerieModel alloc] initMasterWithDictionary:dict];
+                                           [self.seriesArray addObject:self.aModel];
+                                           
+                                           //NSLog(@"Serie insertada: %@ - pagina %d", [dict objectForKey:@"name"], pageNum);
+                                       } else {
+                                           //NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
                                        }
-                                       
-                                       [self.tableView reloadData];
-                                       
-                                       // actualizamos el contenido del primer item
+                                   }
+                                   
+                                   [self.tableView reloadData];
+                                   
+                                   // actualizamos el contenido del detalle con el primer item de la lista
+                                   // solo si estamos en modo ipad
+                                   
+                                   if (!(IS_IPHONE) &&
+                                         pageNum == self.totalPages &&
+                                         self.firstTimeObject == YES) {
+
                                        self.aModel = [self.seriesArray objectAtIndex:self.actualRow];
-                                       
-                                       // inicializamos la pantalla de detalle con la primera serie de la lista
-                                       // solo si estamos en ipad
-                                       
-                                       if (!(IS_IPHONE) && pageNum == 1) {
-                                           //[self selectFirstRow];
-                                           [self getModelDataFromURL:self.aModel.idSerie];
-                                       }
+                                       //[self selectFirstRow];
+                                       [self getModelDataFromURL:self.aModel.idSerie];
+                                   }
                                } else {
                                    NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
                                }
@@ -459,7 +474,7 @@
                                                                  
                                                                  [self.aModel updateModelWithDictionary:parsedJSONArray];
                                                                  
-                                                                 NSLog (@"aqui vamos: %@", self.aModel.backdropURL);
+                                                                 NSLog(@"media votos: %d", self.aModel.votesAverage);
                                                                  
                                                                  [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
                                                                  
@@ -511,14 +526,16 @@
 }
 
 -(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
-    NSLog(@"desactivado search mode");
+
     [searchBar resignFirstResponder];
     
     if ([searchBar.text isEqualToString:@""]){
         self.activeSearch = NO;
+        NSLog(@"desactivado search mode");
     }
     else {
         self.activeSearch = YES;
+        NSLog(@"mantenemos activo search mode");
     }
 }
 
@@ -560,4 +577,74 @@
         NSLog(@"bookmark button clic");
 }
 
+- (IBAction)actionButtonPressed:(id)sender {
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Ordenar lista"
+                                                                   message:@"¿Desea ordenar la lista?"
+                                                            preferredStyle: UIAlertControllerStyleAlert];
+    
+    NSSortDescriptor *sortTitleAsc = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    NSSortDescriptor *sortTitleDesc = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:NO];
+
+    
+    UIAlertAction *sortAscButton = [UIAlertAction actionWithTitle:@"Ascendente"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          
+                                                          NSArray *auxArray = [NSArray array];
+                                                          
+                                                          // con el modo de búsqueda activo ordenamos el array correspondiente
+                                                          if (self.activeSearch) {
+                                                              auxArray = [self.searchArray sortedArrayUsingDescriptors:@[sortTitleAsc]];
+                                                              self.searchArray = nil;
+                                                              self.searchArray = [auxArray copy];
+                                                              NSLog(@"search ordenado - %lu", (unsigned long)self.searchArray.count);
+                                                          }
+                                                          
+                                                          else {
+                                                              auxArray = [self.seriesArray sortedArrayUsingDescriptors:@[sortTitleAsc]];
+                                                              self.seriesArray = nil;
+                                                              self.seriesArray = [auxArray copy];
+                                                              NSLog(@"normal ordenado");
+
+                                                          }
+                                                          [self.tableView reloadData];
+                                                          // Nos posicionamos en la parte superior
+                                                          self.tableView.contentOffset = CGPointMake(0, 0 - self.tableView.contentInset.top);
+                                                          
+                                                      }];
+    
+    UIAlertAction *sortDescButton = [UIAlertAction actionWithTitle:@"Descendente"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          NSArray *auxArray = [NSArray array];
+
+                                                          // con el modo de búsqueda activo ordenamos el array correspondiente
+                                                          if (self.activeSearch) {
+                                                              auxArray = [self.searchArray sortedArrayUsingDescriptors:@[sortTitleDesc]];
+                                                              self.searchArray = nil;
+                                                              self.searchArray = [auxArray copy];
+                                                          }
+                                                          
+                                                          else {
+                                                              NSArray *auxArray = [self.seriesArray sortedArrayUsingDescriptors:@[sortTitleDesc]];
+                                                              
+                                                              self.seriesArray = nil;
+                                                              self.seriesArray = [auxArray copy];
+                                                          }
+                                                          
+                                                          [self.tableView reloadData];
+                                                          self.tableView.contentOffset = CGPointMake(0, 0 - self.tableView.contentInset.top);
+                                                      }];
+    
+    UIAlertAction *noButton = [UIAlertAction actionWithTitle:@"No, thanks"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:nil ];
+    
+    [alert addAction:sortAscButton];
+    [alert addAction:sortDescButton];
+    [alert addAction:noButton];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
 @end

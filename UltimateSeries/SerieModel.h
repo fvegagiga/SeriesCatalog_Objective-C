@@ -15,7 +15,7 @@
 
 @property (copy, nonatomic) NSString *title;
 @property (nonatomic) int idSerie;
-@property (copy, nonatomic) NSArray *genres;
+@property (copy, nonatomic) NSString *genres;
 @property (copy, nonatomic) NSString *infoDesc;
 @property (assign, nonatomic) int seasons;
 @property (assign, nonatomic) int episodes;
@@ -35,7 +35,7 @@
 
 +(id) serieWithTitle: (NSString *) aTitle
              serieID: (int) aIdSerie
-          serieGenre: (NSArray *) aGenre
+          serieGenre: (NSString *) aGenre
            serieInfo: (NSString *) aInfoDesc
         serieSeasons: (int) aSeasons
        serieEpisodes: (int) aEpisodes
@@ -56,7 +56,7 @@
 // inicializador designado
 -(id) initWithTitle: (NSString *) aTitle
             serieID: (int) aIdSerie
-         serieGenre: (NSArray *) aGenre
+         serieGenre: (NSString *) aGenre
           serieInfo: (NSString *) aInfoDesc
        serieSeasons: (int) aSeasons
       serieEpisodes: (int) aEpisodes

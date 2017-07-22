@@ -10,11 +10,13 @@
 #import "SerieModel.h"
 #import <FontAwesomeKit.h>
 #import <MGSwipeTableCell.h>
+#import "Serie+CoreDataClass.h"
+#import "SerieDetailViewController.h"
 
 @interface MasterTableViewController : UITableViewController <UISplitViewControllerDelegate,
-                                                                UISearchBarDelegate,
-                                                                MGSwipeTableCellDelegate>
+                                                                UISearchBarDelegate, MGSwipeTableCellDelegate, SerieDetailViewControllerDelegate>
 
 @property (nonatomic, strong) NSMutableArray *seriesArray;
+@property (nonatomic, strong) Serie *serieBBDD;
 
 @end

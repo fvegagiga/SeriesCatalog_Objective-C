@@ -46,7 +46,7 @@
 
 +(id) serieWithTitle: (NSString *) aTitle
              serieID: (int) aIdSerie
-          serieGenre: (NSArray *) aGenre
+          serieGenre: (NSString *) aGenre
            serieInfo: (NSString *) aInfoDesc
         serieSeasons: (int) aSeasons
        serieEpisodes: (int) aEpisodes
@@ -96,7 +96,7 @@
 // inicializador designado
 -(id) initWithTitle: (NSString *) aTitle
             serieID: (int) aIdSerie
-         serieGenre: (NSArray *) aGenre
+         serieGenre: (NSString *) aGenre
           serieInfo: (NSString *) aInfoDesc
        serieSeasons: (int) aSeasons
       serieEpisodes: (int) aEpisodes
@@ -159,7 +159,7 @@
 
 -(void) updateModelWithDictionary:(NSDictionary *)aDict {
 
-    self.genres = [self extractGenresFromJSONArray:[aDict objectForKey:@"genres"]];
+    self.genres = [self arrayToString:[self extractGenresFromJSONArray:[aDict objectForKey:@"genres"]]];
     self.infoDesc = [aDict objectForKey:@"overview"];
     self.seasons = [[aDict objectForKey:@"number_of_seasons"] intValue];
     self.episodes = ([aDict objectForKey:@"number_of_episodes"] != (id)[NSNull null]) ?
@@ -175,13 +175,16 @@
         self.backdropURL = nil;
     }
     
-    self.infoWeb = ([NSURL URLWithString:[aDict objectForKey:@"homepage"]] != (id)[NSNull null]) ?
-        [NSURL URLWithString:[aDict objectForKey:@"homepage"]] : nil;
+    if ([aDict objectForKey:@"homepage"] != (id)[NSNull null]){
+        self.infoWeb = [NSURL URLWithString:[aDict objectForKey:@"homepage"]];
+    } else {
+        self.infoWeb = nil;
+    }
+
     self.inProduction = [[aDict valueForKey:@"in_production"] boolValue];
     self.votesAverage = [[aDict objectForKey:@"vote_average"] intValue];
     self.votesCount = [[aDict objectForKey:@"vote_count"] intValue];
 }
-
 
 #pragma mark - Utils
 
@@ -193,6 +196,22 @@
         [genres addObject:[dict objectForKey:@"name"]];
     }
     return genres;
+}
+
+
+-(NSString *) arrayToString:(NSArray *) arrayGenres{
+    
+    NSString *result = nil;
+    
+    if ([arrayGenres count] == 1) {
+        result = [[arrayGenres lastObject] stringByAppendingString:@"."];
+    } else if ([arrayGenres count] > 1){
+        result = [[arrayGenres componentsJoinedByString:@", "] stringByAppendingString:@"."];
+    } else {
+        result = @"no defined.";
+    }
+    
+    return result;
 }
 
 @end

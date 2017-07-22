@@ -11,6 +11,8 @@
 #import "SerieDetailViewController.h"
 #import <CRGradientNavigationBar.h>
 #import <HTMLReader.h>
+#import "DataBaseSeries.h"
+
 
 #define IS_IPHONE UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone
 
@@ -21,29 +23,44 @@
 @property (assign, nonatomic) int totalPages;
 
 @property (nonatomic) BOOL activeSearch;
+@property (nonatomic) BOOL favoritesView;
+
 @property (strong, nonatomic) NSMutableArray *searchArray;
+@property (strong, nonatomic) NSArray *favoritesArray;
+
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @property (copy, nonatomic) NSString *apiKey;
 @property (nonatomic) BOOL firstTimeObject;
 
+@property (nonatomic, strong) DataBaseSeries *database;
+
+
 - (IBAction)actionButtonPressed:(id)sender;
 
 @end
-
 
 @implementation MasterTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // BBDD - singleton
+    self.database = [DataBaseSeries defaultDataBase];
+    
+    NSLog(@"PATH = %@", [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject]);
+    
     self.clearsSelectionOnViewWillAppear = NO;
     
     self.seriesArray = [NSMutableArray array];
     self.searchArray = [NSMutableArray array];
+    self.favoritesArray = [NSArray array];
     
     self.actualRow = 0;
+    // Cuando la aplicación arranca, controlamos que cargamos la información del primer elemento solo una vez
     self.firstTimeObject = YES;
+    // La aplicación arranca con la vista "online"
+    self.favoritesView = NO;
     
     self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAutomatic;
     
@@ -53,10 +70,14 @@
     
     self.apiKey = [self getApiKeyFromURL];
     
+    // Cargamos array de series "online"
     self.totalPages = 25;
     for (int i = 1; i <= self.totalPages; i++){
         [self getMasterTableDataFromURL:i];
     }
+    
+    // Recargamos array de series en bbdd
+    [self reloadFavoritesData];
     
     
     // Configuración de la barra de navegación de la escena MASTER
@@ -84,6 +105,7 @@
     // Nos establecemos como delegados del SearchBar
     self.searchBar.delegate = self;
     self.activeSearch = NO;
+    self.favoritesView = NO;
     
     
     // Establecemos las propiedades de la toolbar
@@ -97,6 +119,16 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+-(void)reloadFavoritesData {
+    // Ordenación por campos
+    NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    
+    NSFetchRequest *favoritesRequest = [Serie fetchRequest];
+    favoritesRequest.sortDescriptors = @[ titleSortDescriptor ];
+    NSError *fetchError;
+    self.favoritesArray = [self.database.moc executeFetchRequest:favoritesRequest error:&fetchError];
+    NSLog(@"En bbdd tengo: %lu", (unsigned long)self.favoritesArray.count);
+}
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -112,7 +144,6 @@
     } else {
         self.activeSearch = true;
     }
-    
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -134,149 +165,170 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.activeSearch){
-        return [self.searchArray count];
+    
+    if (self.favoritesView){
+
+        if (self.activeSearch){
+            return [self.searchArray count];
+        } else {
+            return [self.favoritesArray count];
+        }
+        
     } else {
-        return [self.seriesArray count];
+        
+        if (self.activeSearch){
+            return [self.searchArray count];
+        } else {
+            return [self.seriesArray count];
+        }
     }
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    //UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standarCell" forIndexPath:indexPath];
-    // Configure the cell...
-    
     standarTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standarCell" forIndexPath:indexPath];
-
-    SerieModel *xModel = nil;
     
-    if (self.activeSearch) {
-        xModel = self.searchArray[indexPath.row];
-
+    NSURL *cellImage = nil;
+    
+    if (self.favoritesView){
+        
+        Serie *dbModel = nil;
+        
+        dbModel = self.favoritesArray[indexPath.row];
+        
+        cell.serieLabel.text = dbModel.title;
+        cell.serieImageView.image = [UIImage imageNamed:@"load-image.png"];
+        
+        cellImage = [NSURL URLWithString:dbModel.coverURL];
+        
     } else {
-        xModel = self.seriesArray[indexPath.row];
+        
+        SerieModel *xModel = nil;
+        
+        if (self.activeSearch) {
+            xModel = self.searchArray[indexPath.row];
+            
+        } else {
+            xModel = self.seriesArray[indexPath.row];
+        }
+        
+        cell.serieLabel.text = xModel.title;
+        cell.serieImageView.image = [UIImage imageNamed:@"load-image.png"];
+        
+        cellImage = xModel.coverURL;
+        
+        
+        // configuramos los iconos de los botones
+        // uso de la librería FontAwesomeKit para los iconos
+        // y la librería MGSwipeTableCell para los menus en las celdas
+        
+        NSError *error;
+        FAKFontAwesome *heartIcon = [FAKFontAwesome  iconWithIdentifier:@"fa-heart" size:25 error:&error];
+        
+        UIColor *buttonColor = (id)[UIColor colorWithRed:0.35f green:0.75f blue:0.42f alpha:1.0f];
+        
+        [heartIcon addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
+        UIImage *iconImageFav = [heartIcon imageWithSize:CGSizeMake(50, 50)];
+        
+        // configuramos los botones de la izquierda
+        cell.leftButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:iconImageFav backgroundColor:nil]];
+        cell.leftSwipeSettings.transition = MGSwipeTransition3D;
+        
+        cell.layer.cornerRadius = 30;
+        cell.clipsToBounds = true;
+        cell.swipeBackgroundColor = buttonColor;
+        
+        UIView *myBackView = [[UIView alloc] initWithFrame:cell.frame];
+        myBackView.backgroundColor = [UIColor colorWithRed:0.11 green:0.26 blue:0.15 alpha:1];
+        [cell setSelectedBackgroundView:myBackView];
+        
+        // delegado MGSwipeTableCell
+        cell.delegate = self;
     }
-
-    cell.serieLabel.text = xModel.title;
-    cell.serieImageView.image = [UIImage imageNamed:@"load-image.png"];
     
-    [cell showImageFromURL:xModel.coverURL];
+    [cell showImageFromURL:cellImage];
     
-    // configuramos los iconos de los botones
-    // uso de la librería FontAwesomeKit para los iconos
-    // y la librería MGSwipeTableCell para los menus en las celdas
-    
-    NSError *error;
-    FAKFontAwesome *heartIcon = [FAKFontAwesome  iconWithIdentifier:@"fa-heart" size:25 error:&error];
-    
-    UIColor *buttonColor = (id)[UIColor colorWithRed:0.35f green:0.75f blue:0.42f alpha:1.0f];
-    
-    [heartIcon addAttribute:NSForegroundColorAttributeName value:[UIColor redColor]];
-    UIImage *iconImageFav = [heartIcon imageWithSize:CGSizeMake(50, 50)];
-    
-    // configuramos los botones de la izquierda
-    cell.leftButtons = @[[MGSwipeButton buttonWithTitle:@"" icon:iconImageFav backgroundColor:nil]];
-    cell.leftSwipeSettings.transition = MGSwipeTransition3D;
-    
-    cell.layer.cornerRadius = 30;
-    cell.clipsToBounds = true;
-    cell.swipeBackgroundColor = buttonColor;
-    
-    UIView *myBackView = [[UIView alloc] initWithFrame:cell.frame];
-    myBackView.backgroundColor = [UIColor colorWithRed:0.11 green:0.26 blue:0.15 alpha:1];
-    [cell setSelectedBackgroundView:myBackView];
-    
-    // delegado MGSwipeTableCell
-    cell.delegate = self;
     
     return cell;
 }
 
--(void)extractCellInfo: (NSIndexPath*) indexPath {
+
+-(void)extractCellInfo: (NSIndexPath*) indexPath
+         forSaveinDDBB:(BOOL)  dataForDDBB{
     
-    // Si estamos en modo "busqueda" tenemos que mostrar la información equivalente del array original de datos
-    if(self.activeSearch){
-        NSString *searchTitleSelected = [[self.searchArray objectAtIndex:indexPath.row] title];
+    if (self.favoritesView) {
         
-        NSLog(@"estamos en busqueda: seleleccionamos %@", searchTitleSelected);
+        NSString *searchTitleSelected = [[self.favoritesArray objectAtIndex:indexPath.row] title];
         
-        for (int i = 0; i< self.seriesArray.count; i++ ){
-            if ([[self.seriesArray[i] title] isEqualToString:searchTitleSelected]){
-                self.aModel = [self.seriesArray objectAtIndex:i];
-                NSLog(@"NUM POS tabla: %d", (int)indexPath.row);
-                NSLog(@"NUM POS array: %d", i);
-            }
-        }
-    } else {
+        NSLog(@"estamos en favoritos: seleleccionamos %@", searchTitleSelected);
+        
         self.actualRow = (int)indexPath.row;
-        self.aModel = [self.seriesArray objectAtIndex:indexPath.row];
-    }
-    
-    NSLog(@"id de la serie seleccionada: %d", self.aModel.idSerie);
-    
-    if (self.aModel.infoDesc == nil) {
-        // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
-        [self getModelDataFromURL:self.aModel.idSerie];
-    } else {
+        self.aModel = [self.favoritesArray objectAtIndex:indexPath.row];
+        
         [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
     }
     
-    // al seleccionar una fila de la tabla, quitamos el foco del campo de busqueda
-    [self.searchBar resignFirstResponder];
-    
+    else {
+        
+        // Si estamos en modo "busqueda" tenemos que mostrar la información equivalente del array original de datos
+        if(self.activeSearch){
+            NSString *searchTitleSelected = [[self.searchArray objectAtIndex:indexPath.row] title];
+            
+            NSLog(@"estamos en busqueda: seleleccionamos %@", searchTitleSelected);
+            
+            for (int i = 0; i< self.seriesArray.count; i++ ){
+                if ([[self.seriesArray[i] title] isEqualToString:searchTitleSelected]){
+                    
+                    self.aModel = [self.seriesArray objectAtIndex:i];
+                    //NSLog(@"NUM POS tabla: %d - POS array: %d", (int)indexPath.row, i);
+                }
+            }
+        } else {
+            self.actualRow = (int)indexPath.row;
+            self.aModel = [self.seriesArray objectAtIndex:indexPath.row];
+        }
+        
+        NSLog(@"id de la serie seleccionada: %d", self.aModel.idSerie);
+        
+        if (self.aModel.infoDesc == nil) {
+            // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
+            [self getModelDataFromURL:self.aModel.idSerie
+                        forSaveinDDBB:dataForDDBB];
+        } else {
+            [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
+        }
+        
+        // al seleccionar una fila de la tabla, quitamos el foco del campo de busqueda
+        [self.searchBar resignFirstResponder];
+        
+    }
 }
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self extractCellInfo:indexPath];
+    [self extractCellInfo:indexPath
+            forSaveinDDBB:NO];
 }
 
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 #pragma mark - MGSwipeTableCellDelegate
 
--(void)swipeTableCell:(MGSwipeTableCell *)cell didChangeSwipeState:(MGSwipeState)state gestureIsActive:(BOOL)gestureIsActive{
-    gestureIsActive ? NSLog(@"si esta activa"): NSLog(@"no esta activa");
+-(BOOL)swipeTableCell:(MGSwipeTableCell *)cell canSwipe:(MGSwipeDirection)direction fromPoint:(CGPoint)point{
+    if (self.favoritesView)
+        return NO;
+    else
+        return YES;
 }
 
 -(void)swipeTableCellWillBeginSwiping:(MGSwipeTableCell *)cell{
     self.activeSearch? NSLog(@"ATENCION!: estamos en modo search") : NSLog(@"ATENCION!: no estamos en modo search");
     
-    // eliminamos el foco del campo de búsqueda cuando desplazamos una celda
+    // se elimina el foco del campo de búsqueda cuando desplazamos una celda
     [self.searchBar resignFirstResponder];
     
     if ([self.searchBar.text isEqualToString:@""]){
@@ -285,7 +337,6 @@
     else {
         self.activeSearch = YES;
     }
-
 }
 
 -(BOOL)swipeTableCell:(MGSwipeTableCell *)cell tappedButtonAtIndex:(NSInteger)index direction:(MGSwipeDirection)direction fromExpansion:(BOOL)fromExpansion {
@@ -294,7 +345,8 @@
     
     // seleccionamos la celda que se acaba de marcar como favorita para que los datos concuerden (master / detail)
     [self.tableView selectRowAtIndexPath:indexpath animated:true scrollPosition:false];
-    [self extractCellInfo:indexpath];
+    [self extractCellInfo:indexpath
+            forSaveinDDBB:YES];
     
     return YES;
 }
@@ -331,15 +383,41 @@
         
         SerieDetailViewController *destination = (SerieDetailViewController *) [[segue destinationViewController] topViewController];
         
-        SerieModel *selectedSerieModel = sender;
+        SerieModel *selectedSerieModel = nil;
         
-        destination.aModel = selectedSerieModel;
+        if (self.favoritesView) {
+            Serie * selectedSerieFromDDBB = sender;
+            
+            // Realizamos la conversión del formato de la bbdd al de nuestro modelo (principalmente los NSURL)
+            
+            selectedSerieModel = [SerieModel serieWithTitle:selectedSerieFromDDBB.title
+                                                    serieID:selectedSerieFromDDBB.idSerie
+                                                 serieGenre:selectedSerieFromDDBB.genres
+                                                  serieInfo:selectedSerieFromDDBB.infoDesc
+                                               serieSeasons:selectedSerieFromDDBB.seasons
+                                              serieEpisodes:selectedSerieFromDDBB.episodes
+                                           serieBackDropURL:[NSURL URLWithString:selectedSerieFromDDBB.backdropURL]
+                                              serieCoverURL:[NSURL URLWithString:selectedSerieFromDDBB.coverURL]
+                                               serieInfoWeb:[NSURL URLWithString:selectedSerieFromDDBB.infoWeb]
+                                          serieInProduction:selectedSerieFromDDBB.inProduction
+                                          serieVotesAverage:selectedSerieFromDDBB.votesAverage
+                                            serieVotesCount:selectedSerieFromDDBB.votesCount];
+            
+            destination.aModel = selectedSerieModel;
+      
+        } else {
+            
+            selectedSerieModel = sender;
+            destination.aModel = selectedSerieModel;
+        }
+        
+        destination.favoriteMode = self.favoritesView;
+        destination.delegate = self; // Nos establecemos como delegados de SerieDetailViewController
         
         destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         self.navigationItem.leftItemsSupplementBackButton = true;
     }
 }
-
 
 
 
@@ -411,15 +489,15 @@
                                    for (NSDictionary *dict in itemsArray){
                                        
                                        // motivos de descarte de una serie (no tener informados ciertos campos)
-                                       if (([dict objectForKey:@"poster_path"] != (id)[NSNull null]) &&
-                                           ([dict objectForKey:@"overview"] != (id)[NSNull null])    &&
-                                           (![[dict objectForKey:@"overview"] isEqualToString:@""])  &&
+                                       if (([dict objectForKey:@"poster_path"] != (id)[NSNull null])  &&
+                                           ([dict objectForKey:@"overview"] != (id)[NSNull null])     &&
+                                           (![[dict objectForKey:@"overview"] isEqualToString:@""])   &&
                                            ([dict objectForKey:@"backdrop_path"] != (id)[NSNull null]))
                                        {
                                            self.aModel = [[SerieModel alloc] initMasterWithDictionary:dict];
                                            [self.seriesArray addObject:self.aModel];
                                            
-                                           //NSLog(@"Serie insertada: %@ - pagina %d", [dict objectForKey:@"name"], pageNum);
+                                           //NSLog(@"Serie insertada: %@ - pagina %@", [dict objectForKey:@"name"], [dict objectForKey:@"homepage"]);
                                        } else {
                                            //NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
                                        }
@@ -430,14 +508,8 @@
                                    // actualizamos el contenido del detalle con el primer item de la lista
                                    // solo si estamos en modo ipad
                                    
-                                   if (!(IS_IPHONE) &&
-                                         pageNum == self.totalPages &&
-                                         self.firstTimeObject == YES) {
-
-                                       self.aModel = [self.seriesArray objectAtIndex:self.actualRow];
-                                       //[self selectFirstRow];
-                                       [self getModelDataFromURL:self.aModel.idSerie];
-                                   }
+                                   [self chargeFirstViewItem:pageNum];
+                                   
                                } else {
                                    NSLog(@"Error al parsear JSON: %@", jsonError.localizedDescription);
                                }
@@ -450,8 +522,33 @@
 }
 
 
+-(void)chargeFirstViewItem: (int) pageNum{
+    
+    if (!(IS_IPHONE) &&
+        pageNum == self.totalPages &&
+        self.firstTimeObject == YES) {
+        
+        self.actualRow = 0;
+        
+        if (self.favoritesView){
+            if (self.favoritesArray.count > 0){
+                self.aModel = [self.favoritesArray objectAtIndex:self.actualRow];
+                [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
+            } else {
+                [self performSegueWithIdentifier:@"emptyView" sender:nil];
+            }
+        } else {
+            self.aModel = [self.seriesArray objectAtIndex:self.actualRow];
+            [self getModelDataFromURL:self.aModel.idSerie
+                        forSaveinDDBB: NO];
+        }
+        
+        //[self selectFirstRow];
+        
+    }
+}
 
--(void)getModelDataFromURL:(int) idForUpdateItem {
+-(void)getModelDataFromURL:(int)idForUpdateItem forSaveinDDBB:(BOOL) saveInDDBB {
     
     NSLog (@"Recuperamos informacion completa de: %d", self.aModel.idSerie);
     
@@ -475,6 +572,25 @@
                                                                  [self.aModel updateModelWithDictionary:parsedJSONArray];
                                                                  
                                                                  NSLog(@"media votos: %d", self.aModel.votesAverage);
+                                                                 
+                                                                 if(saveInDDBB){
+                                                                     self.serieBBDD = [NSEntityDescription insertNewObjectForEntityForName:@"Serie" inManagedObjectContext:self.database.moc];
+                                                                     
+                                                                     self.serieBBDD.title = self.aModel.title;
+                                                                     self.serieBBDD.idSerie = self.aModel.idSerie;
+                                                                     self.serieBBDD.genres = self.aModel.genres;
+                                                                     self.serieBBDD.infoDesc = self.aModel.infoDesc;
+                                                                     self.serieBBDD.seasons = self.aModel.seasons;
+                                                                     self.serieBBDD.episodes = self.aModel.episodes;
+                                                                     self.serieBBDD.backdropURL = [self.aModel.backdropURL absoluteString];
+                                                                     self.serieBBDD.coverURL = [self.aModel.coverURL absoluteString];
+                                                                     self.serieBBDD.infoWeb = [self.aModel.infoWeb absoluteString];
+                                                                     self.serieBBDD.inProduction = self.aModel.inProduction;
+                                                                     self.serieBBDD.votesAverage = self.aModel.votesAverage;
+                                                                     self.serieBBDD.votesCount = self.aModel.votesCount;
+                                                                     
+                                                                     [self.database save];
+                                                                 }
                                                                  
                                                                  [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
                                                                  
@@ -579,18 +695,16 @@
 
 - (IBAction)actionButtonPressed:(id)sender {
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Ordenar lista"
-                                                                   message:@"¿Desea ordenar la lista?"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Options"
+                                                                   message:@"What would you like to do?"
                                                             preferredStyle: UIAlertControllerStyleAlert];
     
-    NSSortDescriptor *sortTitleAsc = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-    NSSortDescriptor *sortTitleDesc = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:NO];
-
-    
-    UIAlertAction *sortAscButton = [UIAlertAction actionWithTitle:@"Ascendente"
+    UIAlertAction *sortAscButton = [UIAlertAction actionWithTitle:@"Sort list"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
                                                           
+                                                          NSSortDescriptor *sortTitleAsc = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+
                                                           NSArray *auxArray = [NSArray array];
                                                           
                                                           // con el modo de búsqueda activo ordenamos el array correspondiente
@@ -598,14 +712,12 @@
                                                               auxArray = [self.searchArray sortedArrayUsingDescriptors:@[sortTitleAsc]];
                                                               self.searchArray = nil;
                                                               self.searchArray = [auxArray copy];
-                                                              NSLog(@"search ordenado - %lu", (unsigned long)self.searchArray.count);
                                                           }
                                                           
                                                           else {
                                                               auxArray = [self.seriesArray sortedArrayUsingDescriptors:@[sortTitleAsc]];
                                                               self.seriesArray = nil;
                                                               self.seriesArray = [auxArray copy];
-                                                              NSLog(@"normal ordenado");
 
                                                           }
                                                           [self.tableView reloadData];
@@ -614,37 +726,69 @@
                                                           
                                                       }];
     
-    UIAlertAction *sortDescButton = [UIAlertAction actionWithTitle:@"Descendente"
+    UIAlertAction *showFavButton = [UIAlertAction actionWithTitle:@"Change view"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
-                                                          NSArray *auxArray = [NSArray array];
-
-                                                          // con el modo de búsqueda activo ordenamos el array correspondiente
-                                                          if (self.activeSearch) {
-                                                              auxArray = [self.searchArray sortedArrayUsingDescriptors:@[sortTitleDesc]];
-                                                              self.searchArray = nil;
-                                                              self.searchArray = [auxArray copy];
-                                                          }
                                                           
-                                                          else {
-                                                              NSArray *auxArray = [self.seriesArray sortedArrayUsingDescriptors:@[sortTitleDesc]];
+                                                          if(self.favoritesView){
+                                                              // Mostramos vista "onLine"
+                                                              self.favoritesView = NO;
+                                                              self.searchBar.hidden = NO;
                                                               
-                                                              self.seriesArray = nil;
-                                                              self.seriesArray = [auxArray copy];
+                                                              [self chargeFirstViewItem:self.totalPages];
+
+                                                          } else {
+                                                              // Mostramos vista "Favoritos"
+                                                              [self reloadFavoritesData]; // Recargamos array de series en bbdd
+                                                              
+                                                              self.favoritesView = YES;
+                                                              self.searchBar.hidden = YES;
+                                                              self.firstTimeObject = YES;
+                                                              
+                                                              [self chargeFirstViewItem:self.totalPages];
                                                           }
                                                           
                                                           [self.tableView reloadData];
-                                                          self.tableView.contentOffset = CGPointMake(0, 0 - self.tableView.contentInset.top);
                                                       }];
     
-    UIAlertAction *noButton = [UIAlertAction actionWithTitle:@"No, thanks"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:nil ];
-    
+    UIAlertAction *cancelButton = [UIAlertAction actionWithTitle:@"Close menu"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil ];
+
+    if(self.favoritesView){
+        [sortAscButton setEnabled:NO];
+    }
     [alert addAction:sortAscButton];
-    [alert addAction:sortDescButton];
-    [alert addAction:noButton];
+    [alert addAction:showFavButton];
+    [alert addAction:cancelButton];
+    
     
     [self presentViewController:alert animated:YES completion:nil];
 }
+
+
+#pragma mark - SerieDetailViewControllerDelegate
+
+-(void)deleteFromFavorites:(int) idSerieToDelete {
+    
+    Serie *serieToDelete = nil;
+    
+    for (int i = 0; i < self.favoritesArray.count; i++){
+        
+        if ([self.favoritesArray[i] idSerie] == idSerieToDelete){
+            serieToDelete = self.favoritesArray[i];
+        }
+    }
+    
+    if (serieToDelete != nil) {
+        [self.database.moc deleteObject:serieToDelete];
+        [self.database save];
+        [self reloadFavoritesData];
+        
+        [self.tableView reloadData];
+        self.firstTimeObject = YES;
+        [self chargeFirstViewItem:self.totalPages];
+    }
+}
+
 @end

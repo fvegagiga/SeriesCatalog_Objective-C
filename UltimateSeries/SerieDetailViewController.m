@@ -29,8 +29,10 @@
 @property (weak, nonatomic) IBOutlet UIView *backgroundViewGradient;
 
 @property (weak, nonatomic) IBOutlet UIButton *infoWebButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *trashButton;
 
 - (IBAction)infoWebButtonPressed:(id)sender;
+- (IBAction)trashButtonPressed:(id)sender;
 
 @end
 
@@ -40,6 +42,10 @@
     [super viewDidLoad];
     
     self.title = self.aModel.title;
+    
+    if (!self.favoriteMode) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -84,22 +90,6 @@
 
 
 
-//#pragma mark - Segues
-//
-//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-//    
-//    if ([segue.identifier isEqualToString:@"webSegue"]) {
-//        
-//        WebViewController *destination = (WebViewController *) [segue destinationViewController];
-//        destination.webURL = self.aModel.infoWeb;
-//        
-//        destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-//        self.navigationItem.leftItemsSupplementBackButton = true;
-//    }
-//}
-
-
-
 #pragma mark - Utils
 -(void) syncModelWithView {
     
@@ -109,7 +99,7 @@
         self.infoWebButton.hidden = YES;
     }
     
-    self.genreLabel.text = [self.genreLabel.text stringByAppendingString:[self arrayToString: self.aModel.genres]];
+    self.genreLabel.text = self.aModel.genres;
     self.seasonsLabel.text = [self.seasonsLabel.text stringByAppendingString:[NSString stringWithFormat:@"%d",self.aModel.seasons]];
     self.episodesLabel.text = [self.episodesLabel.text stringByAppendingString:[NSString stringWithFormat:@"%d",self.aModel.episodes]];
     
@@ -156,8 +146,6 @@
         self.votesLabel.attributedText = finalString;
         
     }
-    
-    
     
     self.infoDescTextView.text = self.aModel.infoDesc;
 
@@ -217,20 +205,7 @@
     [self.imageDataTaskForBackDrop resume];
 }
 
--(NSString *) arrayToString:(NSArray *) arrayGenres{
-    
-    NSString *result = nil;
-    
-    if ([arrayGenres count] == 1) {
-        result = [[arrayGenres lastObject] stringByAppendingString:@"."];
-    } else if ([arrayGenres count] > 1){
-        result = [[arrayGenres componentsJoinedByString:@", "] stringByAppendingString:@"."];
-    } else {
-        result = @"no defined.";
-    }
-    
-    return result;
-}
+
 /*
 #pragma mark - Navigation
 
@@ -252,5 +227,9 @@
     // transicion SHOW, tenemos que tirar del navigationController en el que estamos
     [self.navigationController pushViewController:destination animated:YES];
     
+}
+
+- (IBAction)trashButtonPressed:(id)sender {
+    [self.delegate deleteFromFavorites:self.aModel.idSerie];
 }
 @end

@@ -209,7 +209,13 @@
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" id="5tO-ge-DFf"/>
+                    <navigationItem key="navigationItem" id="5tO-ge-DFf">
+                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="gqO-Nh-Aho">
+                            <connections>
+                                <action selector="trashButtonPressed:" destination="y4U-Rz-VxX" id="8Vk-GV-hlS"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="backgroundViewGradient" destination="Ilv-I6-r0U" id="GXg-xf-ZF4"/>
                         <outlet property="coverImageView" destination="J9o-G9-OR2" id="MFc-Tz-1Fd"/>
@@ -222,6 +228,7 @@
                         <outlet property="productionLabel" destination="bOq-1j-b2k" id="Uta-ch-TAE"/>
                         <outlet property="seasonsLabel" destination="AtK-y4-G1z" id="IFw-oL-M8O"/>
                         <outlet property="titleLabel" destination="3y3-MX-8Ed" id="Ipf-fi-pmM"/>
+                        <outlet property="trashButton" destination="gqO-Nh-Aho" id="pDD-de-gwz"/>
                         <outlet property="votesLabel" destination="aKP-A4-Tvc" id="Gle-9G-uyU"/>
                     </connections>
                 </viewController>

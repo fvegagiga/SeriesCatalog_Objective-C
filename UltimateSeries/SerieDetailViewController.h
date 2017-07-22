@@ -8,11 +8,23 @@
 
 #import <UIKit/UIKit.h>
 #import "SerieModel.h"
-#import "MasterTableViewController.h"
+
+@class MasterTableViewController;
+
+
+// Creamos el protocolo de delegación
+@protocol SerieDetailViewControllerDelegate <NSObject>
+
+-(void)deleteFromFavorites:(int) idSerieToDelete;
+
+@end
 
 
 @interface SerieDetailViewController : UIViewController 
 
 @property (strong, nonatomic) SerieModel *aModel;
+@property (nonatomic) BOOL favoriteMode;
+
+@property (nonatomic, weak) id<SerieDetailViewControllerDelegate> delegate;
 
 @end

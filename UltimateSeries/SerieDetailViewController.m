@@ -10,6 +10,9 @@
 #import "WebViewController.h"
 #import <FontAwesomeKit.h>
 
+#define IS_IPHONE UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone
+
+
 @interface SerieDetailViewController ()
 
 @property (nonatomic, strong) NSURLSessionDataTask *imageDataTaskForCover;
@@ -41,7 +44,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = self.aModel.title;
+    if (self.aModel != nil){
+        self.title = self.aModel.title;
+    } else {
+        self.title = @"No data";
+    }
     
     if (!self.favoriteMode) {
         self.navigationItem.rightBarButtonItem = nil;
@@ -61,18 +68,25 @@
     
     gradient.colors = @[ firstColor, secondColor ];
     
-    [self.backgroundViewGradient.layer insertSublayer:gradient atIndex:0];
+    if (self.aModel == nil){
+        [self.backgroundViewGradient.layer insertSublayer:gradient atIndex:2];
+    } else {
+        [self.backgroundViewGradient.layer insertSublayer:gradient atIndex:0];
+    }
 }
 
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-
+    
     // para recalcular el tamaño de la capa de degradado en caso de girar el dispositivo
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        if (self.aModel == nil){
+            [[[self.backgroundViewGradient.layer sublayers] objectAtIndex:2] setFrame:self.backgroundViewGradient.bounds];
+        } else {
+            [[[self.backgroundViewGradient.layer sublayers] objectAtIndex:0] setFrame:self.backgroundViewGradient.bounds];
+        }
         
-        [[[self.backgroundViewGradient.layer sublayers] objectAtIndex:0] setFrame:self.backgroundViewGradient.bounds];
-
     }];
 }
 
@@ -80,7 +94,9 @@
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self syncModelWithView];
+    if (self.aModel != nil){
+        [self syncModelWithView];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -230,6 +246,7 @@
 }
 
 - (IBAction)trashButtonPressed:(id)sender {
+    //Enviamos la orden de eliminar el registro de la tabla
     [self.delegate deleteFromFavorites:self.aModel.idSerie];
 }
 @end

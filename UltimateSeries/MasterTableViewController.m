@@ -79,9 +79,9 @@
     // Recargamos array de series en bbdd
     [self reloadFavoritesData];
     
-    
     // Configuración de la barra de navegación de la escena MASTER
     //UINavigationController *navControllerMaster = self.splitViewController.viewControllers[0];
+
     
     // Configuración de la barra de navegación de la escena DETAIL
     UINavigationController *navControllerDetail = self.splitViewController.viewControllers[1];
@@ -99,6 +99,8 @@
     // Libreria CRGradientNavigationBar para el gradiente en la barra de navegación
     [[CRGradientNavigationBar appearance] setBarTintGradientColors:colors];
 
+    
+    
     // Nos establecemos como delegados del SplitViewController
     self.splitViewController.delegate = self;
     
@@ -134,6 +136,7 @@
     [super viewDidAppear:animated];
     
     [self.navigationController setToolbarHidden:NO animated:YES];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -144,6 +147,7 @@
     } else {
         self.activeSearch = true;
     }
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -284,10 +288,14 @@
                     //NSLog(@"NUM POS tabla: %d - POS array: %d", (int)indexPath.row, i);
                 }
             }
-        } else {
+        }
+        
+        else {
             self.actualRow = (int)indexPath.row;
             self.aModel = [self.seriesArray objectAtIndex:indexPath.row];
         }
+        
+        
         
         NSLog(@"id de la serie seleccionada: %d", self.aModel.idSerie);
         
@@ -318,6 +326,8 @@
 
 #pragma mark - MGSwipeTableCellDelegate
 
+// Controlamos el menu al desplazar la celda (insertar el item en favoritos - bbdd)
+
 -(BOOL)swipeTableCell:(MGSwipeTableCell *)cell canSwipe:(MGSwipeDirection)direction fromPoint:(CGPoint)point{
     if (self.favoritesView)
         return NO;
@@ -326,7 +336,6 @@
 }
 
 -(void)swipeTableCellWillBeginSwiping:(MGSwipeTableCell *)cell{
-    self.activeSearch? NSLog(@"ATENCION!: estamos en modo search") : NSLog(@"ATENCION!: no estamos en modo search");
     
     // se elimina el foco del campo de búsqueda cuando desplazamos una celda
     [self.searchBar resignFirstResponder];
@@ -386,24 +395,29 @@
         SerieModel *selectedSerieModel = nil;
         
         if (self.favoritesView) {
-            Serie * selectedSerieFromDDBB = sender;
+            Serie *selectedSerieFromDDBB = sender;
             
             // Realizamos la conversión del formato de la bbdd al de nuestro modelo (principalmente los NSURL)
-            
-            selectedSerieModel = [SerieModel serieWithTitle:selectedSerieFromDDBB.title
-                                                    serieID:selectedSerieFromDDBB.idSerie
-                                                 serieGenre:selectedSerieFromDDBB.genres
-                                                  serieInfo:selectedSerieFromDDBB.infoDesc
-                                               serieSeasons:selectedSerieFromDDBB.seasons
-                                              serieEpisodes:selectedSerieFromDDBB.episodes
-                                           serieBackDropURL:[NSURL URLWithString:selectedSerieFromDDBB.backdropURL]
-                                              serieCoverURL:[NSURL URLWithString:selectedSerieFromDDBB.coverURL]
-                                               serieInfoWeb:[NSURL URLWithString:selectedSerieFromDDBB.infoWeb]
-                                          serieInProduction:selectedSerieFromDDBB.inProduction
-                                          serieVotesAverage:selectedSerieFromDDBB.votesAverage
-                                            serieVotesCount:selectedSerieFromDDBB.votesCount];
-            
-            destination.aModel = selectedSerieModel;
+            if (selectedSerieFromDDBB != nil){
+                selectedSerieModel = [SerieModel serieWithTitle:selectedSerieFromDDBB.title
+                                                        serieID:selectedSerieFromDDBB.idSerie
+                                                     serieGenre:selectedSerieFromDDBB.genres
+                                                      serieInfo:selectedSerieFromDDBB.infoDesc
+                                                   serieSeasons:selectedSerieFromDDBB.seasons
+                                                  serieEpisodes:selectedSerieFromDDBB.episodes
+                                               serieBackDropURL:[NSURL URLWithString:selectedSerieFromDDBB.backdropURL]
+                                                  serieCoverURL:[NSURL URLWithString:selectedSerieFromDDBB.coverURL]
+                                                   serieInfoWeb:[NSURL URLWithString:selectedSerieFromDDBB.infoWeb]
+                                              serieInProduction:selectedSerieFromDDBB.inProduction
+                                              serieVotesAverage:selectedSerieFromDDBB.votesAverage
+                                                serieVotesCount:selectedSerieFromDDBB.votesCount];
+                
+                destination.aModel = selectedSerieModel;
+                
+            } else {
+                
+                destination.aModel = nil; // si enviamos nil es que no hay datos guardados en la tabla
+            }
       
         } else {
             
@@ -417,8 +431,8 @@
         destination.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         self.navigationItem.leftItemsSupplementBackButton = true;
     }
-}
 
+}
 
 
 #pragma mark - Server
@@ -428,19 +442,20 @@
 //    LLamada sincrona para recibir el api-key
 //    original: https://notepad.pw/fvg0902_intent
     
-//    NSURL *apiURL = [NSURL URLWithString: @"https://notepad.pw/markdown/f4kshl83l"];
-//    NSData *apiData = [NSData dataWithContentsOfURL:apiURL];
-//    
-//    NSString *apiWebStr = [[NSString alloc] initWithData:apiData encoding:NSUTF8StringEncoding];
-//    
-//    HTMLDocument *document = [HTMLDocument documentWithString:apiWebStr];
-//    
-//    //NSString *apiKeyString = [[document firstNodeMatchingSelector:@"p"] textContent];
-//    NSArray *apiKeyElement = [document nodesMatchingParsedSelector:@"div"];
-//    NSString *apiKeyString = [[apiKeyElement[2] firstNodeMatchingSelector:@"p"] textContent];
+    NSString *originalWeb =@"http://m.uploadedit.com/ba3s/150074673862.txt";
+    
+    NSURL *apiURL = [NSURL URLWithString: originalWeb];
+    
+    NSError *error;
+    NSString *apiWebStr = [NSString stringWithContentsOfURL:apiURL encoding:NSUTF8StringEncoding error:&error];
+  
+    if (apiWebStr)
+        NSLog(@"%@", apiWebStr);
+    else
+        NSLog(@"%@", error);
 
-    NSString *apikeyStr = @"7d34f86cc14ecd73a16b9d1838c88a13";
-    return apikeyStr;
+    //7d34f86cc14ecd73a16b9d1838c88a13
+    return apiWebStr;
 }
 
 -(NSString *)getUrlAddress:(int) idForUpdateItem {
@@ -532,10 +547,14 @@
         
         if (self.favoritesView){
             if (self.favoritesArray.count > 0){
+                
                 self.aModel = [self.favoritesArray objectAtIndex:self.actualRow];
                 [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
+                
             } else {
-                [self performSegueWithIdentifier:@"emptyView" sender:nil];
+                
+                self.aModel = nil;
+                [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
             }
         } else {
             self.aModel = [self.seriesArray objectAtIndex:self.actualRow];
@@ -571,9 +590,11 @@
                                                                  
                                                                  [self.aModel updateModelWithDictionary:parsedJSONArray];
                                                                  
-                                                                 NSLog(@"media votos: %d", self.aModel.votesAverage);
-                                                                 
                                                                  if(saveInDDBB){
+                                                                     
+                                                                     NSLog(@"lo guarda en bbdd");
+
+                                                                     
                                                                      self.serieBBDD = [NSEntityDescription insertNewObjectForEntityForName:@"Serie" inManagedObjectContext:self.database.moc];
                                                                      
                                                                      self.serieBBDD.title = self.aModel.title;
@@ -730,13 +751,15 @@
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
                                                           
+                                                          self.actualRow = 0;
+                                                          self.activeSearch = NO;
+                                                          self.searchBar.text = @"";
+                                                          
                                                           if(self.favoritesView){
                                                               // Mostramos vista "onLine"
                                                               self.favoritesView = NO;
                                                               self.searchBar.hidden = NO;
-                                                              
-                                                              [self chargeFirstViewItem:self.totalPages];
-
+                                                            
                                                           } else {
                                                               // Mostramos vista "Favoritos"
                                                               [self reloadFavoritesData]; // Recargamos array de series en bbdd
@@ -744,9 +767,10 @@
                                                               self.favoritesView = YES;
                                                               self.searchBar.hidden = YES;
                                                               self.firstTimeObject = YES;
-                                                              
-                                                              [self chargeFirstViewItem:self.totalPages];
+                                                
                                                           }
+                                                          
+                                                          [self chargeFirstViewItem:self.totalPages];
                                                           
                                                           [self.tableView reloadData];
                                                       }];
@@ -758,6 +782,8 @@
     if(self.favoritesView){
         [sortAscButton setEnabled:NO];
     }
+    
+    
     [alert addAction:sortAscButton];
     [alert addAction:showFavButton];
     [alert addAction:cancelButton];
@@ -788,7 +814,11 @@
         [self.tableView reloadData];
         self.firstTimeObject = YES;
         [self chargeFirstViewItem:self.totalPages];
+        
     }
+    
+    // Volvemos a la escena anterior
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

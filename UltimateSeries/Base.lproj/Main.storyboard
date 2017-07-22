@@ -319,7 +319,7 @@
                     <textInputTraits key="textInputTraits"/>
                 </searchBar>
             </objects>
-            <point key="canvasLocation" x="1462" y="360"/>
+            <point key="canvasLocation" x="1910" y="466"/>
         </scene>
         <!--Master VC-->
         <scene sceneID="EJt-Om-ikf">
@@ -342,7 +342,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WrN-lO-0O6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="361"/>
+            <point key="canvasLocation" x="132" y="466"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="tmb-f7-oyd">

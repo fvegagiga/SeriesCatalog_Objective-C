@@ -10,7 +10,6 @@
 #import "standarTableViewCell.h"
 #import "SerieDetailViewController.h"
 #import <CRGradientNavigationBar.h>
-#import <HTMLReader.h>
 #import "DataBaseSeries.h"
 
 
@@ -47,8 +46,6 @@
     
     // BBDD - singleton
     self.database = [DataBaseSeries defaultDataBase];
-    
-    NSLog(@"PATH = %@", [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject]);
     
     self.clearsSelectionOnViewWillAppear = NO;
     
@@ -98,8 +95,6 @@
     
     // Libreria CRGradientNavigationBar para el gradiente en la barra de navegación
     [[CRGradientNavigationBar appearance] setBarTintGradientColors:colors];
-
-    
     
     // Nos establecemos como delegados del SplitViewController
     self.splitViewController.delegate = self;
@@ -107,7 +102,6 @@
     // Nos establecemos como delegados del SearchBar
     self.searchBar.delegate = self;
     self.activeSearch = NO;
-    self.favoritesView = NO;
     
     
     // Establecemos las propiedades de la toolbar
@@ -115,12 +109,10 @@
     UIColor *toolBarColor = [UIColor colorWithRed:0.07f green:0.18f blue:0.11f alpha:1.0f];
 
     self.navigationController.toolbar.barTintColor = toolBarColor;
-
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+
+// recarga de la tabla en modo "favoritos"
 -(void)reloadFavoritesData {
     // Ordenación por campos
     NSSortDescriptor *titleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
@@ -135,8 +127,7 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    [self.navigationController setToolbarHidden:NO animated:YES];
-    
+    [self.navigationController setToolbarHidden:NO animated:YES]; // mostrar toolbar inferior
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -153,7 +144,7 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
-    [self.navigationController setToolbarHidden:YES animated:YES];
+    [self.navigationController setToolbarHidden:YES animated:YES];  // ocultar toolbar inferior
 }
 
 - (void)didReceiveMemoryWarning {
@@ -265,7 +256,7 @@
         
         NSString *searchTitleSelected = [[self.favoritesArray objectAtIndex:indexPath.row] title];
         
-        NSLog(@"estamos en favoritos: seleleccionamos %@", searchTitleSelected);
+        NSLog(@"estamos en favoritos: seleccionamos %@", searchTitleSelected);
         
         self.actualRow = (int)indexPath.row;
         self.aModel = [self.favoritesArray objectAtIndex:indexPath.row];
@@ -292,6 +283,7 @@
         
         else {
             self.actualRow = (int)indexPath.row;
+            
             self.aModel = [self.seriesArray objectAtIndex:indexPath.row];
         }
         
@@ -299,13 +291,18 @@
         
         NSLog(@"id de la serie seleccionada: %d", self.aModel.idSerie);
         
-        if (self.aModel.infoDesc == nil) {
-            // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
-            [self getModelDataFromURL:self.aModel.idSerie
-                        forSaveinDDBB:dataForDDBB];
-        } else {
-            [self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
-        }
+        [self getModelDataFromURL:self.aModel.idSerie
+                    forSaveinDDBB:dataForDDBB];
+        
+//        if (self.aModel.infoDesc == nil) {
+//            
+//            // es un elemento que no tenemos cargado en memoria, actualizamos su contenido
+//            [self getModelDataFromURL:self.aModel.idSerie
+//                        forSaveinDDBB:dataForDDBB];
+//            
+//        } else {
+//            //[self performSegueWithIdentifier:@"showDetail" sender:self.aModel];
+//        }
         
         // al seleccionar una fila de la tabla, quitamos el foco del campo de busqueda
         [self.searchBar resignFirstResponder];
@@ -354,6 +351,7 @@
     
     // seleccionamos la celda que se acaba de marcar como favorita para que los datos concuerden (master / detail)
     [self.tableView selectRowAtIndexPath:indexpath animated:true scrollPosition:false];
+    
     [self extractCellInfo:indexpath
             forSaveinDDBB:YES];
     
@@ -439,8 +437,8 @@
 
 -(NSString *)getApiKeyFromURL {
     
-//    LLamada sincrona para recibir el api-key
-//    original: https://notepad.pw/fvg0902_intent
+//    LLamada sincrona para recibir el api-key de un fichero de internet
+//      http://m.uploadedit.com/ba3s/150074673862.txt
     
     NSString *originalWeb =@"http://m.uploadedit.com/ba3s/150074673862.txt";
     
@@ -451,8 +449,11 @@
   
     if (apiWebStr)
         NSLog(@"%@", apiWebStr);
-    else
+    
+    else { // Si tenemos error al conseguir la api-key, nos vamos al modo favoritos (BBDD)
         NSLog(@"%@", error);
+        self.favoritesView = YES;
+    }
 
     //7d34f86cc14ecd73a16b9d1838c88a13
     return apiWebStr;
@@ -511,14 +512,13 @@
                                        {
                                            self.aModel = [[SerieModel alloc] initMasterWithDictionary:dict];
                                            [self.seriesArray addObject:self.aModel];
-                                           
                                            //NSLog(@"Serie insertada: %@ - pagina %@", [dict objectForKey:@"name"], [dict objectForKey:@"homepage"]);
                                        } else {
                                            //NSLog(@"Serie descartada: %@", [dict objectForKey:@"name"]);
                                        }
                                    }
                                    
-                                   [self.tableView reloadData];
+                                   //[self.tableView reloadData];
                                    
                                    // actualizamos el contenido del detalle con el primer item de la lista
                                    // solo si estamos en modo ipad
@@ -538,6 +538,7 @@
 
 
 -(void)chargeFirstViewItem: (int) pageNum{
+    
     
     if (!(IS_IPHONE) &&
         pageNum == self.totalPages &&
@@ -561,9 +562,11 @@
             [self getModelDataFromURL:self.aModel.idSerie
                         forSaveinDDBB: NO];
         }
-        
         //[self selectFirstRow];
-        
+    }
+    
+    if (pageNum == self.totalPages && self.firstTimeObject == YES){
+        [self.tableView reloadData];
     }
 }
 
@@ -592,7 +595,7 @@
                                                                  
                                                                  if(saveInDDBB){
                                                                      
-                                                                     NSLog(@"lo guarda en bbdd");
+                                                                     NSLog(@"guardado en bbdd");
 
                                                                      
                                                                      self.serieBBDD = [NSEntityDescription insertNewObjectForEntityForName:@"Serie" inManagedObjectContext:self.database.moc];
@@ -668,11 +671,9 @@
     
     if ([searchBar.text isEqualToString:@""]){
         self.activeSearch = NO;
-        NSLog(@"desactivado search mode");
     }
     else {
         self.activeSearch = YES;
-        NSLog(@"mantenemos activo search mode");
     }
 }
 
@@ -697,8 +698,6 @@
     } else {
         self.activeSearch = YES;
     }
-
-    NSLog(@"activeSearch: %@", self.activeSearch ? @"YES" : @"NO");
     
     if (self.activeSearch) {
         for (int i = 0; i< self.seriesArray.count; i++) {
@@ -710,9 +709,6 @@
     [self.tableView reloadData];
 }
 
--(void)searchBarBookmarkButtonClicked:(UISearchBar *)searchBar{
-        NSLog(@"bookmark button clic");
-}
 
 - (IBAction)actionButtonPressed:(id)sender {
     

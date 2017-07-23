@@ -120,7 +120,6 @@
     self.episodesLabel.text = [self.episodesLabel.text stringByAppendingString:[NSString stringWithFormat:@"%d",self.aModel.episodes]];
     
     // mostrar check si esta en produccion o aspas si no
-    NSLog(@"%@",self.aModel.inProduction ? @"YES":@"NO");
     
     if(!self.aModel.inProduction){
         self.productionImageView.image = [UIImage imageNamed:@"icon-Cancel.png"];
@@ -147,7 +146,7 @@
             [starIconsArray addObject:starIcon];
         }
         
-        NSLog(@"Tengo: %lu", (unsigned long)starIconsArray.count);
+        NSLog(@"Tengo: %lu estrellas de puntuación", (unsigned long)starIconsArray.count);
         
         UIImage *finalImageStars = [UIImage imageWithStackedIcons:starIconsArray imageSize:CGSizeMake(350, 25)];
         

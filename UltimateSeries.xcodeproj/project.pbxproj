@@ -22,7 +22,6 @@
 		F8EFA55B1F0D457900F7561B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA55A1F0D457900F7561B /* AppDelegate.m */; };
 		F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA55F1F0D457900F7561B /* Main.storyboard */; };
 		F8EFA5631F0D457900F7561B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA5621F0D457900F7561B /* Assets.xcassets */; };
-		F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8EFA5641F0D457900F7561B /* LaunchScreen.storyboard */; };
 		F8EFA56F1F0D459E00F7561B /* SerieModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA56E1F0D459E00F7561B /* SerieModel.m */; };
 		F8EFA57D1F0D56DC00F7561B /* SerieDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA57B1F0D56DC00F7561B /* SerieDetailViewController.m */; };
 		F8EFA5841F0D651000F7561B /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8EFA5821F0D651000F7561B /* WebViewController.m */; };
@@ -53,7 +52,6 @@
 		F8EFA55A1F0D457900F7561B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		F8EFA5601F0D457900F7561B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F8EFA5621F0D457900F7561B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F8EFA5651F0D457900F7561B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F8EFA5671F0D457900F7561B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F8EFA56D1F0D459E00F7561B /* SerieModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SerieModel.h; sourceTree = "<group>"; };
 		F8EFA56E1F0D459E00F7561B /* SerieModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SerieModel.m; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 				F8EFA5741F0D4FF700F7561B /* Controllers */,
 				F8EFA55F1F0D457900F7561B /* Main.storyboard */,
 				F8EFA5621F0D457900F7561B /* Assets.xcassets */,
-				F8EFA5641F0D457900F7561B /* LaunchScreen.storyboard */,
 				F8EFA5671F0D457900F7561B /* Info.plist */,
 				F8EFA5561F0D457900F7561B /* Supporting Files */,
 				F8EAB80E1F2218CA004ED4D4 /* SerieFavModel.xcdatamodeld */,
@@ -258,7 +255,6 @@
 				F880D5EA1F17EF6B003E4DA2 /* load-image.png in Resources */,
 				F8817D271F12B5F70041D9E2 /* icon-Ok.png in Resources */,
 				F8817D261F12B5F70041D9E2 /* icon-Cancel.png in Resources */,
-				F8EFA5661F0D457900F7561B /* LaunchScreen.storyboard in Resources */,
 				F880D5E81F17D43A003E4DA2 /* No-image-found.jpg in Resources */,
 				F8EFA5631F0D457900F7561B /* Assets.xcassets in Resources */,
 				F8EFA5611F0D457900F7561B /* Main.storyboard in Resources */,
@@ -343,14 +339,6 @@
 				F8EFA5601F0D457900F7561B /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		F8EFA5641F0D457900F7561B /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F8EFA5651F0D457900F7561B /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -453,6 +441,7 @@
 			baseConfigurationReference = C77B9DB927507E3E0F6CF5D5 /* Pods-UltimateSeries.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				DEVELOPMENT_TEAM = 5MPC35WK7F;
 				INFOPLIST_FILE = UltimateSeries/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -467,6 +456,7 @@
 			baseConfigurationReference = F6821AC31D5A3ADD4E9592D6 /* Pods-UltimateSeries.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				DEVELOPMENT_TEAM = 5MPC35WK7F;
 				INFOPLIST_FILE = UltimateSeries/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
